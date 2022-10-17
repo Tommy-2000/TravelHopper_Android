@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">TravelHopper - Travel App</string>
+    <string name="todo">TODO</string>
+    <string name="welcome_message">Welcome to TravelHopper!</string>
+    <string name="home">Go to Home</string>
+    <string name="camera">Go to Camera</string>
+    <string name="planner">Go to Planner</string>
+    <string name="maps">Go to Maps</string>
+    <string name="settings">Go to Settings</string>
+    <string name="camera_permission_granted">Camera Permission Granted</string>
+    <string name="camera_permission_denied">Camera Permission Denied</string>
+    <string name="record_audio_permission_granted">Record Audio Permission Granted</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="record_video">Record Video</string>
+    <string name="back_button">Go back</string>
+
+    <string name="home_fragment">Home Fragment</string>
+    <string name="camera_fragment">Camera Fragment</string>
+    <string name="planner_fragment">Planner Fragment</string>
+    <string name="maps_fragment">Maps Fragment</string>
+    <string name="settings_fragment">Settings Fragment</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+</resources>
