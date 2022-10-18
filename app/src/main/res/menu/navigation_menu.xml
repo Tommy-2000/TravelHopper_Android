@@ -5,8 +5,8 @@
         android:title="@string/home"
         android:icon="@drawable/ic_home_icon"/>
 
-    <item android:id="@+id/planner_fragment"
-        android:title="@string/planner"
+    <item android:id="@+id/travel_planner_fragment"
+        android:title="@string/travel_planner"
         android:icon="@drawable/ic_book_icon"/>
 
     <item android:id="@+id/camera_activity"
@@ -17,7 +17,7 @@
         android:title="@string/maps"
         android:icon="@drawable/ic_map_icon"/>
 
-    <item android:id="@+id/settings_fragment"
+    <item android:id="@+id/settings_activity"
         android:title="@string/settings"
         android:icon="@drawable/ic_settings_icon"/>
 

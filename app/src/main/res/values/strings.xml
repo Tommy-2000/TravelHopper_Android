@@ -2,11 +2,11 @@
     <string name="app_name">TravelHopper - Travel App</string>
     <string name="todo">TODO</string>
     <string name="welcome_message">Welcome to TravelHopper!</string>
-    <string name="home">Go to Home</string>
-    <string name="camera">Go to Camera</string>
-    <string name="planner">Go to Planner</string>
-    <string name="maps">Go to Maps</string>
-    <string name="settings">Go to Settings</string>
+    <string name="home">Home</string>
+    <string name="camera">Camera</string>
+    <string name="travel_planner">Travel Planner</string>
+    <string name="maps">Maps</string>
+    <string name="settings">Settings</string>
     <string name="camera_permission_granted">Camera Permission Granted</string>
     <string name="camera_permission_denied">Camera Permission Denied</string>
     <string name="record_audio_permission_granted">Record Audio Permission Granted</string>

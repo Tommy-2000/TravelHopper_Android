@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Day Colours -->
     <color name="cream_yellow">#FFF1BC</color>
     <color name="sunglow_yellow">#FFCC00</color>
     <color name="azure_blue">#3F84E5</color>
     <color name="royal_blue">#2A00C3</color>
-    <color name="medium_turquoise">#08D9D2</color>
-    <color name="dark_cyan">#058A85</color>
-    <color name="sap_green">#589C00</color>
+    <!-- Night Colours -->
+    <color name="naples_yellow">#FFE070</color>
+    <color name="gold_metallic">#E0B400</color>
+    <color name="celtic_blue">#1D6BD7</color>
+    <color name="navy_blue">#1F008F</color>
+
+    <!-- Standard Colours -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Fullscreen ThemeOverlay Colours -->
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>
     <color name="light_blue_A200">#FF40C4FF</color>

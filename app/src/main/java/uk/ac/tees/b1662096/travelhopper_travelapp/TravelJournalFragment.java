@@ -17,7 +17,7 @@ import uk.ac.tees.b1662096.travelhopper_travelapp.placeholder.PlaceholderContent
 /**
  * A fragment representing a list of Items.
  */
-public class PlannerFragment extends Fragment {
+public class TravelJournalFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -28,13 +28,13 @@ public class PlannerFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public PlannerFragment() {
+    public TravelJournalFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static PlannerFragment newInstance(int columnCount) {
-        PlannerFragment fragment = new PlannerFragment();
+    public static TravelJournalFragment newInstance(int columnCount) {
+        TravelJournalFragment fragment = new TravelJournalFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -53,7 +53,7 @@ public class PlannerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_planner_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_travel_planner_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -64,7 +64,7 @@ public class PlannerFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new TravelPlanRecyclerViewAdapter(PlaceholderContent.ITEMS));
+            recyclerView.setAdapter(new TravelJournalRecyclerViewAdapter(PlaceholderContent.ITEMS));
         }
         return view;
     }

@@ -1,14 +1,14 @@
 package uk.ac.tees.b1662096.travelhopper_travelapp;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.FragmentTravelPlannerBinding;
 import uk.ac.tees.b1662096.travelhopper_travelapp.placeholder.PlaceholderContent.PlaceholderItem;
-import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.FragmentPlannerBinding;
 
 import java.util.List;
 
@@ -16,18 +16,19 @@ import java.util.List;
  * {@link RecyclerView.Adapter} that can display a {@link PlaceholderItem}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class TravelPlanRecyclerViewAdapter extends RecyclerView.Adapter<TravelPlanRecyclerViewAdapter.ViewHolder> {
+public class TravelJournalRecyclerViewAdapter extends RecyclerView.Adapter<TravelJournalRecyclerViewAdapter.ViewHolder> {
 
     private final List<PlaceholderItem> mValues;
 
-    public TravelPlanRecyclerViewAdapter(List<PlaceholderItem> items) {
+    public TravelJournalRecyclerViewAdapter(List<PlaceholderItem> items) {
         mValues = items;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        return new ViewHolder(FragmentPlannerBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        return new ViewHolder(FragmentTravelPlannerBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
 
     }
 
@@ -43,17 +44,18 @@ public class TravelPlanRecyclerViewAdapter extends RecyclerView.Adapter<TravelPl
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView mIdView;
         public final TextView mContentView;
         public PlaceholderItem mItem;
 
-        public ViewHolder(FragmentPlannerBinding binding) {
+        public ViewHolder(FragmentTravelPlannerBinding binding) {
             super(binding.getRoot());
             mIdView = binding.itemNumber;
             mContentView = binding.content;
         }
 
+        @NonNull
         @Override
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
