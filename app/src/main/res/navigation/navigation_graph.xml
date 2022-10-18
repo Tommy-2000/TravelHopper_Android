@@ -3,34 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/home_fragment">
 
     <fragment
-        android:id="@+id/homeFragment"
+        android:id="@+id/home_fragment"
         android:name="uk.ac.tees.b1662096.travelhopper_travelapp.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_plannerFragment"
-            app:destination="@id/plannerFragment" />
+            app:destination="@id/travel_planner_fragment" />
     </fragment>
     <fragment
-        android:id="@+id/plannerFragment"
-        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.PlannerFragment"
+        android:id="@+id/travel_planner_fragment"
+        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.TravelJournalFragment"
         android:label="fragment_planner_list"
-        tools:layout="@layout/fragment_planner_list" />
+        tools:layout="@layout/fragment_travel_planner_list" />
+    <activity
+        android:id="@+id/camera_activity"
+        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.CameraActivity"
+        android:label="activity_camera"
+        tools:layout="@layout/activity_camera" />
     <fragment
-        android:id="@+id/mapsFragment"
+        android:id="@+id/maps_fragment"
         android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MapsFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" />
     <fragment
-        android:id="@+id/settingsFragment"
+        android:id="@+id/settings_fragment"
         android:name="uk.ac.tees.b1662096.travelhopper_travelapp.SettingsFragment"
         android:label="SettingsFragment" />
-    <activity
-        android:id="@+id/cameraActivity"
-        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.CameraActivity"
-        android:label="activity_camera"
-        tools:layout="@layout/activity_camera" />
 </navigation>
