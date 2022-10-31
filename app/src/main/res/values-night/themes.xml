@@ -1,16 +1,14 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.TravelHopperTravelApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.TravelHopperTravelApp" parent="Theme.Material3.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/celtic_blue</item>
-        <item name="colorPrimaryVariant">@color/navy_blue</item>
+        <item name="colorPrimary">@color/royal_blue</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/naples_yellow</item>
-        <item name="colorSecondaryVariant">@color/gold_metallic</item>
+        <item name="colorSecondary">@color/terracotta_orange</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
     </style>
     <!-- Fullscreen application theme -->
     <style name="Theme.AppCompat.Light.NoActionBar.FullScreen" parent="@style/Theme.AppCompat.Light.NoActionBar">

@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">TravelHopper - Travel App</string>
+    <string name="app_name">TravelHopper</string>
     <string name="todo">TODO</string>
     <string name="welcome_message">Welcome to TravelHopper!</string>
     <string name="home">Home</string>
     <string name="camera">Camera</string>
-    <string name="travel_planner">Travel Planner</string>
+    <string name="diary">Diary</string>
     <string name="maps">Maps</string>
     <string name="settings">Settings</string>
     <string name="camera_permission_granted">Camera Permission Granted</string>
@@ -34,5 +34,15 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="button_1">Button 1</string>
+    <string name="button_2">Button 2</string>
+    <string name="gallery">Gallery</string>
+    <string name="media_content_description">Photo or Video Content</string>
+    <string name="media_name">Media Name</string>
+    <string name="trip_title">Trip Title</string>
+    <string name="trip_secondary_title">Trip Secondary Title</string>
+    <string name="trip_content_text">Trip Content Text</string>
+    <string name="favourite_button">Favourite Button</string>
+    <string name="camera_button">Camera Button</string>
 
 </resources>
