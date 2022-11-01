@@ -6,8 +6,6 @@
     android:name="uk.ac.tees.b1662096.travelhopper_travelapp.PlannerFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".TravelJournalFragment"
-    tools:listitem="@layout/fragment_travel_planner" />
+    tools:context=".MyFavouritesFragment"
+    tools:listitem="@layout/fragment_my_favourites" />

@@ -3,34 +3,50 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/home_fragment">
+    app:startDestination="@id/my_home_fragment">
 
     <fragment
-        android:id="@+id/home_fragment"
-        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.HomeFragment"
+        android:id="@+id/my_home_fragment"
+        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyHomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_my_home" >
         <action
-            android:id="@+id/action_homeFragment_to_plannerFragment"
-            app:destination="@id/travel_planner_fragment" />
+            android:id="@+id/action_myHomeFragment_to_myFavouritesFragment"
+            app:destination="@id/my_favourites_fragment" />
+        <action
+            android:id="@+id/action_myHomeFragment_to_myGalleryFragment"
+            app:destination="@id/my_gallery_fragment" />
+        <action
+            android:id="@+id/action_myHomeFragment_to_myMapFragment"
+            app:destination="@id/my_map_fragment" />
+        <action
+            android:id="@+id/action_myHomeFragment_to_myCameraActivity"
+            app:destination="@id/my_camera_activity" />
+        <action
+            android:id="@+id/action_myHomeFragment_to_mySettingsFragment"
+            app:destination="@id/settings_fragment" />
     </fragment>
     <fragment
-        android:id="@+id/travel_planner_fragment"
-        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.TravelJournalFragment"
-        android:label="fragment_planner_list"
-        tools:layout="@layout/fragment_travel_planner_list" />
+        android:id="@+id/my_favourites_fragment"
+        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyFavouritesFragment"
+        android:label="fragment_diary_list"
+        tools:layout="@layout/fragment_my_favourites_list" />
+    <fragment android:id="@+id/my_gallery_fragment"
+        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyGalleryFragment"
+        android:label="fragment_gallery_list"
+        tools:layout="@layout/fragment_my_gallery" />
     <activity
-        android:id="@+id/camera_activity"
-        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.CameraActivity"
+        android:id="@+id/my_camera_activity"
+        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyCameraActivity"
         android:label="activity_camera"
-        tools:layout="@layout/activity_camera" />
+        tools:layout="@layout/activity_my_camera" />
     <fragment
-        android:id="@+id/maps_fragment"
-        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MapsFragment"
-        android:label="fragment_map"
-        tools:layout="@layout/fragment_map" />
+        android:id="@+id/my_map_fragment"
+        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyMapFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_my_map" />
     <fragment
         android:id="@+id/settings_fragment"
-        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.SettingsFragment"
+        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MySettingsFragment"
         android:label="SettingsFragment" />
 </navigation>
