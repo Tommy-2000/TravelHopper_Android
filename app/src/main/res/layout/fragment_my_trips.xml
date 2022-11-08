@@ -12,17 +12,18 @@
         android:padding="15dp">
 
         <TextView
-            android:id="@+id/my_gallery_fragment_title"
+            android:id="@+id/my_trips_fragment_title"
             style="@style/TextAppearance.Material3.DisplayMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/my_gallery_title" />
+            android:text="@string/my_trips_title" />
+
 
         <LinearLayout
             android:id="@+id/filter_button_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/my_gallery_fragment_title"
+            android:layout_below="@id/my_trips_fragment_title"
             android:orientation="horizontal"
             android:padding="16dp">
 
@@ -35,8 +36,8 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/my_gallery_recyclerview"
-            android:name="uk.ac.tees.b1662096.travelhopper_travelapp.GalleryFragment"
+            android:id="@+id/my_trips_recyclerview"
+            android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyTripsFragment"
             android:layout_width="match_parent"
             android:layout_height="650dp"
             android:layout_below="@id/filter_button_group"
@@ -46,17 +47,14 @@
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_photo_button"
+            android:id="@+id/create_new_trip_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/my_trips_recyclerview"
             android:layout_gravity="end"
-            android:layout_below="@id/my_gallery_recyclerview"
-            android:layout_alignParentEnd="true"
-            android:contentDescription="@string/add_media"
+            android:contentDescription="@string/create_new_trip"
             android:elevation="10dp"
             android:fitsSystemWindows="true"
             android:src="@drawable/ic_add_icon" />
-
     </RelativeLayout>
-
 </FrameLayout>

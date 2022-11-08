@@ -45,12 +45,12 @@ public class MyCameraActivity extends AppCompatActivity {
 
     private View rootView;
 
-    private static final String[] PERMISSIONS = new String[]{
+    private static final String[] CAMERA_ACTIVITY_PERMISSIONS = new String[]{
             Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private static final int PERMISSION_REQUEST_CODE = 10;
+    private static final int CAMERA_ACTIVITY_PERMISSION_REQUEST_CODE = 10;
 
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
 
@@ -61,6 +61,8 @@ public class MyCameraActivity extends AppCompatActivity {
     private VideoCapture<Recorder> videoCapture;
 
     private Recorder recorder;
+
+    private Recording recording;
 
     private FloatingActionButton imageCaptureButton, videoCaptureButton;
 
@@ -83,12 +85,12 @@ public class MyCameraActivity extends AppCompatActivity {
                     if (cameraPermissionGranted()) {
                         startCamera(cameraProvider);
                     } else {
-                        requestPermissions();
+                        requestMyCameraPermissions();
                     }
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e("ExecutionException/InterruptedException", "CameraX Binding Failed", e);
                 }
-            }, getCameraExecutor());
+            }, ContextCompat.getMainExecutor(this));
 
         } else {
             Log.i("VIDEO_RECORD_TAG", "Error - Unable to detect camera");
@@ -104,7 +106,7 @@ public class MyCameraActivity extends AppCompatActivity {
             if (readExternalStoragePermissionGranted() && writeExternalStoragePermissionGranted()) {
                 capturePhoto();
             } else {
-                requestPermissions();
+                requestMyCameraPermissions();
             }
         });
         videoCaptureButton = myCameraActivityBinding.videoCaptureButton;
@@ -113,7 +115,7 @@ public class MyCameraActivity extends AppCompatActivity {
             if (readExternalStoragePermissionGranted() && writeExternalStoragePermissionGranted() && recordAudioPermissionGranted()) {
                 captureVideo();
             } else {
-                requestPermissions();
+                requestMyCameraPermissions();
             }
         });
 
@@ -127,33 +129,28 @@ public class MyCameraActivity extends AppCompatActivity {
         return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
     }
 
-    // Set up the main Executor for the camera
-    public Executor getCameraExecutor() {
-        return ContextCompat.getMainExecutor(this);
-    }
-
     // Before the main Camera starts, check if permissions are granted by the user
     private boolean cameraPermissionGranted() {
-        return ContextCompat.checkSelfPermission(this, PERMISSIONS[2]) == PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(this, CAMERA_ACTIVITY_PERMISSIONS[2]) == PackageManager.PERMISSION_GRANTED;
     }
 
     // Before taking a photo, check if READ and WRITE permissions are granted by the user
     private boolean readExternalStoragePermissionGranted() {
-        return ContextCompat.checkSelfPermission(this, PERMISSIONS[3]) == PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(this, CAMERA_ACTIVITY_PERMISSIONS[3]) == PackageManager.PERMISSION_GRANTED;
     }
 
     private boolean writeExternalStoragePermissionGranted() {
-        return ContextCompat.checkSelfPermission(this, PERMISSIONS[2]) == PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(this, CAMERA_ACTIVITY_PERMISSIONS[2]) == PackageManager.PERMISSION_GRANTED;
     }
 
     // Before recording a video, check if the RECORD_AUDIO permission was granted by the user
     private boolean recordAudioPermissionGranted() {
-        return ContextCompat.checkSelfPermission(this, PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(this, CAMERA_ACTIVITY_PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED;
     }
 
     // If all permissions were not already granted by the user, ask the user for these permissions at runtime
-    private void requestPermissions() {
-        ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
+    private void requestMyCameraPermissions() {
+        ActivityCompat.requestPermissions(this, CAMERA_ACTIVITY_PERMISSIONS, CAMERA_ACTIVITY_PERMISSION_REQUEST_CODE);
     }
 
     // Start the main Camera functionality
@@ -167,7 +164,7 @@ public class MyCameraActivity extends AppCompatActivity {
         // Set up the VideoCapture use case
         // Build Recorder as a part of the VideoCapture
         QualitySelector videoQualitySelector = QualitySelector.fromOrderedList(Arrays.asList(Quality.UHD, Quality.FHD, Quality.HD, Quality.SD), FallbackStrategy.lowerQualityOrHigherThan(Quality.SD));
-        recorder = new Recorder.Builder().setExecutor(getCameraExecutor()).setQualitySelector(videoQualitySelector).build();
+        recorder = new Recorder.Builder().setExecutor(ContextCompat.getMainExecutor(this)).setQualitySelector(videoQualitySelector).build();
 
         // Create the VideoCapture with the Recorder object
         videoCapture = VideoCapture.withOutput(recorder);
@@ -222,7 +219,7 @@ public class MyCameraActivity extends AppCompatActivity {
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                             photoContentValues).build();
             // Capture the photo with the output options and record the capture from callback to output a new photo file
-            imageCapture.takePicture(photoOutputFileOptions, getCameraExecutor(),
+            imageCapture.takePicture(photoOutputFileOptions, ContextCompat.getMainExecutor(this),
                     new ImageCapture.OnImageSavedCallback() {
                         // If the photo has successfully saved, return a success message/Toast
                         @Override
@@ -264,10 +261,10 @@ public class MyCameraActivity extends AppCompatActivity {
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI).setContentValues(videoContentValues).build();
             // Retrieve the output stream from the capture and start the recording with the output options for the file
             try {
-                Recording recording = videoCapture.getOutput()
+                recording = videoCapture.getOutput()
                         .prepareRecording(this, videoOutputFileOptions)
                         .withAudioEnabled()
-                        .start(getCameraExecutor(), videoRecordEvent -> {
+                        .start(ContextCompat.getMainExecutor(this), videoRecordEvent -> {
                             if (videoRecordEvent instanceof VideoRecordEvent.Start) {
                                 Snackbar.make(rootView, "Video is now recording", Snackbar.LENGTH_SHORT).show();
                                 // Change the icon of the record button when recording starts and the button is clicked
@@ -283,6 +280,8 @@ public class MyCameraActivity extends AppCompatActivity {
                                     if (error == VideoRecordEvent.Finalize.ERROR_NONE) {
                                         Snackbar.make(rootView, "Video has been captured successfully", Snackbar.LENGTH_SHORT).show();
                                     } else {
+                                        recording.close();
+                                        recording = null;
                                         Snackbar.make(rootView, "Error while capturing video: " + "${error}", Snackbar.LENGTH_SHORT).show();
                                     }
                                 });
@@ -291,8 +290,6 @@ public class MyCameraActivity extends AppCompatActivity {
             } catch (SecurityException se) {
                 se.printStackTrace();
             }
-//            // Clear the contents of the video once the video file has been successfully saved
-//            videoContentValues.clear();
         }
     }
 

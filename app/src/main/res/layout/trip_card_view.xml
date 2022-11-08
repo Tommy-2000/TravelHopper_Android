@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    android:checkable="true"
     style="?attr/materialCardViewElevatedStyle">
 
     <LinearLayout
@@ -12,11 +12,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    <ImageView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:scaleType="centerCrop"
-        android:contentDescription="@string/media_content_description"/>
+        <ImageView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/media_content_description"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,20 +33,12 @@
                 android:textAppearance="?attr/textAppearanceTitleMedium" />
 
             <TextView
-                android:id="@+id/trip_secondary_title"
+                android:id="@+id/trip_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_margin"
                 android:text="@string/trip_secondary_title"
                 android:textAppearance="?attr/textAppearanceSubtitle1" />
-
-            <TextView
-                android:id="@+id/trip_content_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
-                android:text="@string/trip_content_text"
-                android:textAppearance="?attr/textAppearanceBodyMedium" />
 
         </LinearLayout>
 
@@ -57,7 +49,7 @@
             android:orientation="horizontal">
 
             <CheckBox
-                android:id="@+id/favourite_button_icon"
+                android:id="@+id/trip_favourite_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:button="@drawable/sl_favourite_24dp"

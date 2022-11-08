@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="text_margin">16dp</dimen>
+
+    <!-- Material 3 Design Default Typography - Imported from Tokens -->
+
+    <dimen name="md_sys_typescale_label_small_size">176.00sp</dimen>
+    <dimen name="md_sys_typescale_label_medium_size">192.00sp</dimen>
+    <dimen name="md_sys_typescale_label_large_size">224.00sp</dimen>
+    <dimen name="md_sys_typescale_body_small_size">192.00sp</dimen>
+    <dimen name="md_sys_typescale_body_medium_size">224.00sp</dimen>
+    <dimen name="md_sys_typescale_body_large_size">224.00sp</dimen>
+    <dimen name="md_sys_typescale_title_small_size">224.00sp</dimen>
+    <dimen name="md_sys_typescale_title_medium_size">256.00sp</dimen>
+    <dimen name="md_sys_typescale_title_large_size">352.00sp</dimen>
+    <dimen name="md_sys_typescale_headline_small_size">384.00sp</dimen>
+    <dimen name="md_sys_typescale_headline_medium_size">448.00sp</dimen>
+    <dimen name="md_sys_typescale_headline_large_size">512.00sp</dimen>
+    <dimen name="md_sys_typescale_display_small_size">576.00sp</dimen>
+    <dimen name="md_sys_typescale_display_medium_size">720.00sp</dimen>
+    <dimen name="md_sys_typescale_display_large_size">912.00sp</dimen>
+
 </resources>

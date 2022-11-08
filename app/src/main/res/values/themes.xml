@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.TravelHopperTravelApp" parent="Theme.Material3.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/cream_yellow</item>
-        <item name="colorPrimaryContainer">@color/royal_blue</item>
+        <item name="colorPrimary">@color/royal_blue</item>
+        <item name="colorPrimaryContainer">@color/cream_yellow</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/azure_blue</item>
         <item name="colorSecondaryContainer">@color/terracotta_orange</item>

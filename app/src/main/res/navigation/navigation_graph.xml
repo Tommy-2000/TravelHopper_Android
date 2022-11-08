@@ -11,8 +11,8 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_my_home" >
         <action
-            android:id="@+id/action_myHomeFragment_to_myFavouritesFragment"
-            app:destination="@id/my_favourites_fragment" />
+            android:id="@+id/action_myHomeFragment_to_myTripsFragment"
+            app:destination="@id/my_trips_fragment" />
         <action
             android:id="@+id/action_myHomeFragment_to_myGalleryFragment"
             app:destination="@id/my_gallery_fragment" />
@@ -27,10 +27,10 @@
             app:destination="@id/settings_fragment" />
     </fragment>
     <fragment
-        android:id="@+id/my_favourites_fragment"
-        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyFavouritesFragment"
-        android:label="fragment_diary_list"
-        tools:layout="@layout/fragment_my_favourites_list" />
+        android:id="@+id/my_trips_fragment"
+        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyTripsFragment"
+        android:label="fragment_trips"
+        tools:layout="@layout/fragment_my_trips" />
     <fragment android:id="@+id/my_gallery_fragment"
         android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyGalleryFragment"
         android:label="fragment_gallery_list"

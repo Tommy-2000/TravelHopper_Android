@@ -10,9 +10,7 @@
         <androidx.camera.view.PreviewView
             android:id="@+id/previewViewFinder"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent" />
 
         <LinearLayout
             android:id="@+id/camera_controls_button_group"
@@ -29,7 +27,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="25dp"
+                    android:layout_marginBottom="20dp"
                     android:orientation="horizontal">
 
                         <com.google.android.material.floatingactionbutton.FloatingActionButton

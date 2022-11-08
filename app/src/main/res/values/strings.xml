@@ -1,12 +1,15 @@
 <resources>
     <string name="app_name">TravelHopper</string>
-    <string name="todo">TODO</string>
-    <string name="welcome_message">Welcome to TravelHopper!</string>
+
+    <!-- Navigation Strings -->
     <string name="home">Home</string>
+    <string name="trips">Trips</string>
+    <string name="gallery">Gallery</string>
     <string name="camera">Camera</string>
-    <string name="diary">Diary</string>
-    <string name="maps">Maps</string>
+    <string name="map">Map</string>
     <string name="settings">Settings</string>
+
+    <!-- Permission/Intent Strings -->
     <string name="camera_permission_granted">Camera Permission Granted</string>
     <string name="camera_permission_denied">Camera Permission Denied</string>
     <string name="record_audio_permission_granted">Record Audio Permission Granted</string>
@@ -14,11 +17,19 @@
     <string name="record_video">Record Video</string>
     <string name="back_button">Go back</string>
 
+    <!-- Fragment Names -->
     <string name="home_fragment">Home Fragment</string>
     <string name="camera_fragment">Camera Fragment</string>
     <string name="planner_fragment">Planner Fragment</string>
     <string name="maps_fragment">Maps Fragment</string>
     <string name="settings_fragment">Settings Fragment</string>
+
+    <!-- Page(Fragment) Titles -->
+    <string name="my_home_title">Where will you explore?</string>
+    <string name="my_trips_title">My Trips</string>
+    <string name="my_gallery_title">My Gallery</string>
+    <string name="my_map_title">My Map</string>
+    <string name="my_settings_title">My Settings</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
@@ -34,15 +45,20 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <string name="button_1">Button 1</string>
-    <string name="button_2">Button 2</string>
-    <string name="gallery">Gallery</string>
-    <string name="media_content_description">Photo or Video Content</string>
+
+    <!-- Content/Content Description Strings -->
     <string name="media_name">Media Name</string>
+    <string name="media_content_description">Photo or Video Content</string>
     <string name="trip_title">Trip Title</string>
     <string name="trip_secondary_title">Trip Secondary Title</string>
     <string name="trip_content_text">Trip Content Text</string>
     <string name="favourite_button">Favourite Button</string>
     <string name="camera_button">Camera Button</string>
+    <string name="add_media">Add Media</string>
+    <string name="filter_string">Filter</string>
+    <string name="favourites">Favourites</string>
+    <string name="newer">Newer</string>
+    <string name="older">Older</string>
+    <string name="create_new_trip">Create New Trip</string>
 
 </resources>
