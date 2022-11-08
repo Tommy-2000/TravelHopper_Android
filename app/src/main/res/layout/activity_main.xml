@@ -23,11 +23,10 @@
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
+        style="@style/Widget.Material3.BottomAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        style="@style/Widget.Material3.BottomAppBar"
-        app:elevation="10dp"
         app:layout_constraintBottom_toTopOf="@+id/navHostFragment"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/navigation_menu" />

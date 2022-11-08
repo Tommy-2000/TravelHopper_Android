@@ -8,9 +8,9 @@
         android:title="@string/home"
         app:showAsAction="always" />
 
-    <item android:id="@+id/my_favourites_fragment"
-        android:title="@string/diary"
-        android:icon="@drawable/ic_favourite_filled_icon"
+    <item android:id="@+id/my_trips_fragment"
+        android:title="@string/trips"
+        android:icon="@drawable/ic_trips_icon"
         app:showAsAction="always"/>
 
     <item android:id="@+id/my_gallery_fragment"
@@ -19,7 +19,7 @@
         app:showAsAction="always"/>
 
     <item android:id="@+id/my_map_fragment"
-        android:title="@string/maps"
+        android:title="@string/map"
         android:icon="@drawable/ic_map_icon"
         app:showAsAction="always"/>
 

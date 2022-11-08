@@ -1,5 +1,6 @@
 package uk.ac.tees.b1662096.travelhopper_travelapp;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
@@ -12,6 +13,7 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.color.DynamicColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -23,6 +25,12 @@ import uk.ac.tees.b1662096.travelhopper_travelapp.room.TravelHopperDatabase;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ActivityMainBinding activityMainBinding;
+
+    private static final String[] TRAVELHOPPER_PERMISSIONS = new String[]{
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+    private static final int TRAVELHOPPER_PERMISSIONS_REQUEST_CODE = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +55,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent navigateToMyCamera = new Intent(this, MyCameraActivity.class);
         myCameraActivityButton.setOnClickListener(view -> startActivity(navigateToMyCamera));
 
-        // Initialise the Room database for MyFavouritesFragment
-        TravelHopperDatabase travelHopperDatabase = Room.databaseBuilder(getApplicationContext(), TravelHopperDatabase.class, "travelhopper_database").build();
+//        // Request read and write permissions for accessing user photos and videos
+//        try {
+//            if (readExternalStoragePermissionsGranted() && writeExternalStoragePermissionsGranted()) {
+//                getMediaFromStorage();
+//            } else {
+//                requestTravelHopperPermissions();
+//            }
+//        } catch ()
+
+//        // Initialise the Room database for MyFavouritesFragment
+//        TravelHopperDatabase travelHopperDatabase = Room.databaseBuilder(getApplicationContext(), TravelHopperDatabase.class, "travelhopper_database").build();
     }
+
+//    private boolean readExternalStoragePermissionsGranted() {
+//        return false;
+//    }
+//
+//    private boolean writeExternalStoragePermissionsGranted() {
+//        return false;
+//    }
+//
+//    private void requestTravelHopperPermissions() {
+//
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -57,6 +86,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return NavigationUI.onNavDestinationSelected(item, navController)
                 || super.onOptionsItemSelected(item);
     }
+
+    //    private void getMediaFromStorage() {
+//
+//    }
 
 
     @Override
