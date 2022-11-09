@@ -60,5 +60,6 @@
     <string name="newer">Newer</string>
     <string name="older">Older</string>
     <string name="create_new_trip">Create New Trip</string>
+    <string name="switch_cameras">Switch Cameras</string>
 
 </resources>

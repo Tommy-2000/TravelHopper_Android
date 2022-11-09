@@ -19,7 +19,7 @@
             android:padding="10dp"
             android:orientation="vertical"
             app:layout_constraintStart_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/previewViewFinder"
             app:layout_constraintEnd_toStartOf="@id/vertical_centerline">
 
                 <LinearLayout
@@ -27,14 +27,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="35dp"
                     android:orientation="horizontal">
+
+                        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/video_capture_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:contentDescription="@string/record_video"
+                            android:elevation="10dp"
+                            android:fitsSystemWindows="true"
+                            android:minHeight="48dp"
+                            android:src="@drawable/ic_record_red_icon" />
 
                         <com.google.android.material.floatingactionbutton.FloatingActionButton
                             android:id="@+id/image_capture_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
+                            android:layout_marginStart="100dp"
                             android:contentDescription="@string/take_photo"
                             android:elevation="10dp"
                             android:fitsSystemWindows="true"
@@ -42,28 +54,27 @@
                             android:src="@drawable/ic_camera_icon"
                             tools:ignore="DuplicateSpeakableTextCheck" />
 
-                        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                            android:id="@+id/video_capture_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginStart="125dp"
-                            android:contentDescription="@string/record_video"
-                            android:elevation="10dp"
-                            android:fitsSystemWindows="true"
-                            android:minHeight="48dp"
-                            android:src="@drawable/ic_record_icon" />
+                        <!--                        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+                        <!--                            android:id="@+id/switch_camera_button"-->
+                        <!--                            android:layout_width="wrap_content"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:layout_gravity="end"-->
+                        <!--                            android:layout_marginStart="50dp"-->
+                        <!--                            android:contentDescription="@string/switch_cameras"-->
+                        <!--                            android:elevation="10dp"-->
+                        <!--                            android:fitsSystemWindows="true"-->
+                        <!--                            android:minHeight="48dp"-->
+                        <!--                            android:src="@drawable/ic_camera_switch_icon" />-->
                 </LinearLayout>
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/back_button"
+                    android:id="@+id/navigate_back_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:contentDescription="@string/back_button"
                     android:elevation="10dp"
                     android:fitsSystemWindows="true"
-                    android:minHeight="48dp"
                     android:src="@drawable/ic_arrow_back_icon" />
 
         </LinearLayout>

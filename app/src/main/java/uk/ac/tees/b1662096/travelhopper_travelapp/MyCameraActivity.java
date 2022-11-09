@@ -25,6 +25,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Size;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -35,7 +36,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.ActivityMyCameraBinding;
 
@@ -52,7 +54,11 @@ public class MyCameraActivity extends AppCompatActivity {
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int CAMERA_ACTIVITY_PERMISSION_REQUEST_CODE = 10;
 
+    private Intent navigateToHome;
+
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
+
+    private ExecutorService cameraExecutor;
 
     private PreviewView previewView;
 
@@ -62,9 +68,11 @@ public class MyCameraActivity extends AppCompatActivity {
 
     private Recorder recorder;
 
-    private Recording recording;
+    private Recording videoRecording;
 
-    private FloatingActionButton imageCaptureButton, videoCaptureButton;
+    private boolean curRecording = false;
+
+    private FloatingActionButton imageCaptureButton, videoCaptureButton, navigateBackButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,20 +85,20 @@ public class MyCameraActivity extends AppCompatActivity {
         // Check if device has an available camera
         if (cameraIsAvailable()) {
             Log.i("VIDEO_RECORD_TAG", "Camera is detected");
-            // Set up the CameraProvider and check for permissions granted
-            cameraProviderFuture = ProcessCameraProvider.getInstance(this);
-            cameraProviderFuture.addListener(() -> {
-                try {
-                    ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                    if (cameraPermissionGranted()) {
-                        startCamera(cameraProvider);
-                    } else {
-                        requestMyCameraPermissions();
-                    }
-                } catch (ExecutionException | InterruptedException e) {
-                    Log.e("ExecutionException/InterruptedException", "CameraX Binding Failed", e);
+        // Set up the CameraProvider and check for permissions granted
+        cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+        cameraProviderFuture.addListener(() -> {
+            try {
+                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                if (cameraPermissionGranted()) {
+                    startCamera(cameraProvider);
+                } else {
+                    requestMyCameraPermissions();
                 }
-            }, ContextCompat.getMainExecutor(this));
+            } catch (ExecutionException | InterruptedException e) {
+                Log.e("ExecutionException/InterruptedException", "CameraX Binding Failed", e);
+            }
+        }, ContextCompat.getMainExecutor(this));
 
         } else {
             Log.i("VIDEO_RECORD_TAG", "Error - Unable to detect camera");
@@ -99,30 +107,41 @@ public class MyCameraActivity extends AppCompatActivity {
         // Set up the previewView for CameraX through view binding
         previewView = myCameraActivityBinding.previewViewFinder;
 
-        // Set up Photo and Video Buttons
+        // Set up Photo, Switch Camera and Video Buttons
         imageCaptureButton = myCameraActivityBinding.imageCaptureButton;
         imageCaptureButton.setOnClickListener(view -> {
             // Check for permissions once the imageCaptureButton was clicked
             if (readExternalStoragePermissionGranted() && writeExternalStoragePermissionGranted()) {
                 capturePhoto();
-            } else {
-                requestMyCameraPermissions();
             }
         });
         videoCaptureButton = myCameraActivityBinding.videoCaptureButton;
         videoCaptureButton.setOnClickListener(view -> {
             // Check for permissions once the videoCaptureButton was clicked
             if (readExternalStoragePermissionGranted() && writeExternalStoragePermissionGranted() && recordAudioPermissionGranted()) {
-                captureVideo();
-            } else {
-                requestMyCameraPermissions();
+                // Check whether the app is currently recording a video. If not, start a new recording
+                if (curRecording) {
+                    videoRecording.stop();
+                    videoRecording = null;
+                } else {
+                    curRecording = true;
+                    captureVideoRecording();
+                }
             }
         });
 
+//        switchCameraButton = myCameraActivityBinding.switchCameraButton;
+//        switchCameraButton.setOnClickListener(view -> {
+//
+//        });
+
         // Set up the back Button
-        FloatingActionButton backButton = myCameraActivityBinding.backButton;
-        Intent navigateToHome = new Intent(this, MainActivity.class);
-        backButton.setOnClickListener(view -> startActivity(navigateToHome));
+        navigateBackButton = myCameraActivityBinding.navigateBackButton;
+        navigateToHome = new Intent(this, MainActivity.class);
+        navigateBackButton.setOnClickListener(view -> startActivity(navigateToHome));
+
+        cameraExecutor = Executors.newSingleThreadExecutor();
+
     }
 
     private boolean cameraIsAvailable() {
@@ -175,11 +194,14 @@ public class MyCameraActivity extends AppCompatActivity {
                 .build();
 
         // Set up the Preview use case
-        Preview preview = new Preview.Builder()
+        Preview preview = new Preview.Builder().setTargetAspectRatio(AspectRatio.RATIO_4_3)
                 .build();
 
+        // Set up the implementation mode for the PreviewView
+        previewView.setImplementationMode(PreviewView.ImplementationMode.PERFORMANCE);
+
         // Set up the scaleType for the PreviewView
-        previewView.setScaleType(PreviewView.ScaleType.FILL_START);
+        previewView.setScaleType(PreviewView.ScaleType.FILL_CENTER);
 
         // Set up the previewView SurfaceProvider
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
@@ -221,13 +243,13 @@ public class MyCameraActivity extends AppCompatActivity {
             // Capture the photo with the output options and record the capture from callback to output a new photo file
             imageCapture.takePicture(photoOutputFileOptions, ContextCompat.getMainExecutor(this),
                     new ImageCapture.OnImageSavedCallback() {
-                        // If the photo has successfully saved, return a success message/Toast
+                        // If the photo has successfully saved, return a success message/Snackbar
                         @Override
                         public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                             Snackbar.make(rootView, "Photo has been saved successfully", Snackbar.LENGTH_SHORT).show();
                         }
 
-                        // If the photo has not successfully saved, return an error message/Toast
+                        // If the photo has not successfully saved, return an error message/Snackbar
                         @Override
                         public void onError(@NonNull ImageCaptureException error) {
                             Snackbar.make(rootView, "Error while saving photo: " + error.getMessage(), Snackbar.LENGTH_SHORT).show();
@@ -239,7 +261,7 @@ public class MyCameraActivity extends AppCompatActivity {
         }
     }
 
-    private void captureVideo() {
+    private void captureVideoRecording() {
 
         // Check if the videoCapture object is not pointing to null
         if (videoCapture != null) {
@@ -261,30 +283,25 @@ public class MyCameraActivity extends AppCompatActivity {
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI).setContentValues(videoContentValues).build();
             // Retrieve the output stream from the capture and start the recording with the output options for the file
             try {
-                recording = videoCapture.getOutput()
+                videoRecording = videoCapture.getOutput()
                         .prepareRecording(this, videoOutputFileOptions)
                         .withAudioEnabled()
                         .start(ContextCompat.getMainExecutor(this), videoRecordEvent -> {
                             if (videoRecordEvent instanceof VideoRecordEvent.Start) {
                                 Snackbar.make(rootView, "Video is now recording", Snackbar.LENGTH_SHORT).show();
                                 // Change the icon of the record button when recording starts and the button is clicked
-                                videoCaptureButton.setOnClickListener(view -> videoCaptureButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop_recording_icon, getApplicationContext().getTheme())));
+                                videoCaptureButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop_recording_icon, getApplicationContext().getTheme()));
+                                videoCaptureButton.isEnabled();
                             } else if (videoRecordEvent instanceof VideoRecordEvent.Finalize) {
-                                // Change the icon of the record button when recording stops and the button is clicked
-                                videoCaptureButton.setOnClickListener(view -> {
-                                    videoCaptureButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_record_icon, getApplicationContext().getTheme()));
-                                    // Check if the video has been successfully captured
-                                    VideoRecordEvent.Finalize finalizeEvent =
-                                            (VideoRecordEvent.Finalize) videoRecordEvent;
-                                    int error = finalizeEvent.getError();
-                                    if (error == VideoRecordEvent.Finalize.ERROR_NONE) {
-                                        Snackbar.make(rootView, "Video has been captured successfully", Snackbar.LENGTH_SHORT).show();
-                                    } else {
-                                        recording.close();
-                                        recording = null;
-                                        Snackbar.make(rootView, "Error while capturing video: " + "${error}", Snackbar.LENGTH_SHORT).show();
-                                    }
-                                });
+                                if (!((VideoRecordEvent.Finalize) videoRecordEvent).hasError()) {
+                                    videoCaptureButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_record_red_icon, getApplicationContext().getTheme()));
+                                    Snackbar.make(rootView, "Video has been captured successfully", Snackbar.LENGTH_SHORT).show();
+                                    // Clear the contents of the video once the recording has stopped
+                                    videoContentValues.clear();
+                                } else {
+                                    videoRecording = null;
+                                    Snackbar.make(rootView, "Error while capturing video: " + "${error}", Snackbar.LENGTH_SHORT).show();
+                                }
                             }
                         });
             } catch (SecurityException se) {
@@ -293,5 +310,46 @@ public class MyCameraActivity extends AppCompatActivity {
         }
     }
 
+//    private void changeSwitchCameraButton() {
+//        try {
+//            backCameraAvailable();
+//        } catch (CameraInfoUnavailableException | ExecutionException | InterruptedException e) {
+//            e.printStackTrace();
+//            boolean disabledSwitchCameraBtn = !myCameraActivityBinding.switchCameraButton.isEnabled();
+//        }
+//    }
+//
+//    private boolean backCameraAvailable() throws ExecutionException, InterruptedException, CameraInfoUnavailableException {
+//        return cameraProviderFuture.get().hasCamera(CameraSelector.DEFAULT_BACK_CAMERA);
+//    }
+//
+//    private boolean frontCameraAvailable() throws ExecutionException, InterruptedException, CameraInfoUnavailableException {
+//        return cameraProviderFuture.get().hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA);
+//    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (!cameraPermissionGranted() && !readExternalStoragePermissionGranted() && !writeExternalStoragePermissionGranted() && !recordAudioPermissionGranted()) {
+            requestMyCameraPermissions();
+        } else if (cameraPermissionGranted() && readExternalStoragePermissionGranted() && writeExternalStoragePermissionGranted() & recordAudioPermissionGranted()) {
+            try {
+                startCamera(cameraProviderFuture.get());
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            startActivity(navigateToHome);
+            Snackbar.make(rootView, "Permissions are required to use the camera", Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Once MyCameraActivity is destroyed, shutdown the cameraExecutor thread
+        cameraExecutor.shutdown();
+    }
 }
 
