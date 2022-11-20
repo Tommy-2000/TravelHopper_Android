@@ -4,35 +4,45 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
+import com.google.common.util.concurrent.ListenableFuture;
+
 import java.util.List;
 
 public class TravelHopperRepository {
 
     private final TravelHopperDAO travelHopperDAO;
 
-    private final LiveData<List<MediaEntity>> allMediaEntities;
+    private final LiveData<List<TripEntity>> allTripEntities;
 
     TravelHopperRepository(Application application) {
         TravelHopperDatabase travelHopperDatabase = TravelHopperDatabase.getDatabase(application);
-        travelHopperDAO = travelHopperDatabase.mediaDAO();
-        allMediaEntities = travelHopperDAO.getAllMedia();
+        travelHopperDAO = travelHopperDatabase.travelHopperDAO();
+        allTripEntities = travelHopperDAO.getAllTrips();
     }
 
 
-    LiveData<List<MediaEntity>> getAllMediaEntities() {
-        return allMediaEntities;
+    LiveData<List<TripEntity>> getAllTripEntities() {
+        return allTripEntities;
     }
 
-    void insertMediaEntity(MediaEntity mediaEntity) {
-        TravelHopperDatabase.databaseWriteExecutor.execute(() -> travelHopperDAO.insertMedia(mediaEntity));
+    void insertTripEntity(TripEntity tripEntity) {
+        TravelHopperDatabase.databaseWriteExecutor.execute(() -> travelHopperDAO.insertTripEntity(tripEntity));
     }
 
-    void insertMediaEntities(List<MediaEntity> allMediaEntities) {
-        TravelHopperDatabase.databaseWriteExecutor.execute(() -> travelHopperDAO.insertAllMedia(allMediaEntities));
+    void insertAllTripEntities(List<TripEntity> allTripEntities) {
+        TravelHopperDatabase.databaseWriteExecutor.execute(() -> travelHopperDAO.insertAllTripEntities(allTripEntities));
     }
 
-    void deleteMediaEntity(MediaEntity mediaEntity) {
-        TravelHopperDatabase.databaseWriteExecutor.execute(() -> travelHopperDAO.deleteMedia(mediaEntity));
+    void updateAllTripEntities(List<TripEntity> allTripEntities) {
+        TravelHopperDatabase.databaseWriteExecutor.execute(() -> travelHopperDAO.updateAllTripsEntities(allTripEntities));
+    }
+
+    void deleteTripEntity(TripEntity tripEntity) {
+        TravelHopperDatabase.databaseWriteExecutor.execute(() -> travelHopperDAO.deleteTripEntity(tripEntity));
+    }
+
+    void deleteAllTripEntities(List<TripEntity> allTripEntities) {
+        TravelHopperDatabase.databaseWriteExecutor.execute(() -> travelHopperDAO.deleteAllTripEntities(allTripEntities));
     }
 
 }

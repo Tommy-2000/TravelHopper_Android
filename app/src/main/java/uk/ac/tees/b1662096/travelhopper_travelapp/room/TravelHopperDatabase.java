@@ -5,13 +5,16 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {MediaEntity.class}, version = 1, exportSchema = false)
+@Database(entities = {TripEntity.class}, version = 1, exportSchema = false)
+@TypeConverters({TripDateConverters.class})
 public abstract class TravelHopperDatabase extends RoomDatabase {
-    public abstract TravelHopperDAO mediaDAO();
+    public abstract TravelHopperDAO travelHopperDAO();
 
     private static volatile TravelHopperDatabase DATABASE_INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
@@ -21,7 +24,7 @@ public abstract class TravelHopperDatabase extends RoomDatabase {
         if (DATABASE_INSTANCE == null) {
             synchronized (TravelHopperDatabase.class) {
                 if (DATABASE_INSTANCE == null) {
-                    DATABASE_INSTANCE = Room.databaseBuilder(databaseContext.getApplicationContext(), TravelHopperDatabase.class, "travelhopper_database").build();
+                    DATABASE_INSTANCE = Room.databaseBuilder(databaseContext.getApplicationContext(), TravelHopperDatabase.class, "travelhopper_database").allowMainThreadQueries().build();
                 }
             }
         }
