@@ -3,50 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/my_home_fragment">
+    app:startDestination="@id/myHomeFragment">
 
     <fragment
-        android:id="@+id/my_home_fragment"
+        android:id="@+id/myHomeFragment"
         android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyHomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_my_home" >
-        <action
-            android:id="@+id/action_myHomeFragment_to_myTripsFragment"
-            app:destination="@id/my_trips_fragment" />
-        <action
-            android:id="@+id/action_myHomeFragment_to_myGalleryFragment"
-            app:destination="@id/my_gallery_fragment" />
-        <action
-            android:id="@+id/action_myHomeFragment_to_myMapFragment"
-            app:destination="@id/my_map_fragment" />
-        <action
-            android:id="@+id/action_myHomeFragment_to_myCameraActivity"
-            app:destination="@id/my_camera_activity" />
-        <action
-            android:id="@+id/action_myHomeFragment_to_mySettingsFragment"
-            app:destination="@id/settings_fragment" />
-    </fragment>
+        android:label="My Home"
+        tools:layout="@layout/fragment_my_home"/>
     <fragment
-        android:id="@+id/my_trips_fragment"
+        android:id="@+id/myTripsFragment"
         android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyTripsFragment"
-        android:label="fragment_trips"
+        android:label="My Trips"
         tools:layout="@layout/fragment_my_trips" />
-    <fragment android:id="@+id/my_gallery_fragment"
-        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyGalleryFragment"
-        android:label="fragment_gallery_list"
-        tools:layout="@layout/fragment_my_gallery" />
-    <activity
-        android:id="@+id/my_camera_activity"
-        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyCameraActivity"
-        android:label="activity_camera"
-        tools:layout="@layout/activity_my_camera" />
     <fragment
-        android:id="@+id/my_map_fragment"
+        android:id="@+id/myGalleryFragment"
+        android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyGalleryFragment"
+        android:label="My Gallery"
+        tools:layout="@layout/fragment_my_gallery" />
+    <fragment
+        android:id="@+id/myMapFragment"
         android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyMapFragment"
-        android:label="fragment_maps"
+        android:label="My Maps"
         tools:layout="@layout/fragment_my_map" />
     <fragment
-        android:id="@+id/settings_fragment"
+        android:id="@+id/mySettingsFragment"
         android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MySettingsFragment"
-        android:label="SettingsFragment" />
+        android:label="My Settings" />
 </navigation>

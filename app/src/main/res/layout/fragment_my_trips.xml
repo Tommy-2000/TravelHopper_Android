@@ -2,59 +2,78 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentContentView"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/myTripsFragmentLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="15dp">
+        tools:context=".MyTripsFragment">
 
-        <TextView
-            android:id="@+id/my_trips_fragment_title"
-            style="@style/TextAppearance.Material3.DisplayMedium"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/my_trips_title" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="15dp">
 
-
-        <LinearLayout
-            android:id="@+id/filter_button_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/my_trips_fragment_title"
-            android:orientation="horizontal"
-            android:padding="16dp">
-
-            <Button
-                android:id="@+id/gallery_filter_button"
+            <TextView
+                android:id="@+id/myTripsFragmentTitle"
+                style="@style/TextAppearance.Material3.DisplayMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/filter_string" />
+                android:text="@string/my_trips_title" />
 
-        </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/my_trips_recyclerview"
-            android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyTripsFragment"
-            android:layout_width="match_parent"
-            android:layout_height="650dp"
-            android:layout_below="@id/filter_button_group"
-            app:layoutManager="LinearLayoutManager"
-            tools:context=".MyGalleryFragment"
-            tools:listitem="@layout/media_card_view" />
+            <RelativeLayout
+                android:id="@+id/filterButtonGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/myTripsFragmentTitle"
+                android:orientation="horizontal"
+                android:padding="16dp">
 
+                <Button
+                    android:id="@+id/tripFilterButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_string"
+                    tools:ignore="TextContrastCheck" />
+
+            </RelativeLayout>
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/myTripsRefreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/filterButtonGroup">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/myTripsRecyclerView"
+                    android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyTripsFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="650dp"
+                    android:layout_below="@id/filterButtonGroup"
+                    app:layoutManager="LinearLayoutManager"
+                    tools:context=".MyGalleryFragment"
+                    tools:listitem="@layout/media_card_view" />
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        </RelativeLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/create_new_trip_button"
+            android:id="@+id/addNewTripButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/my_trips_recyclerview"
-            android:layout_gravity="end"
-            android:contentDescription="@string/create_new_trip"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="100dp"
+            android:contentDescription="@string/add_new_trip"
             android:elevation="10dp"
             android:fitsSystemWindows="true"
             android:src="@drawable/ic_add_icon" />
-    </RelativeLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </FrameLayout>

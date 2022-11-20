@@ -21,6 +21,8 @@ import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -150,21 +152,21 @@ public class MyCameraActivity extends AppCompatActivity {
 
     // Before the main Camera starts, check if permissions are granted by the user
     private boolean cameraPermissionGranted() {
-        return ContextCompat.checkSelfPermission(this, CAMERA_ACTIVITY_PERMISSIONS[2]) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    // Before taking a photo, check if READ and WRITE permissions are granted by the user
-    private boolean readExternalStoragePermissionGranted() {
-        return ContextCompat.checkSelfPermission(this, CAMERA_ACTIVITY_PERMISSIONS[3]) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private boolean writeExternalStoragePermissionGranted() {
-        return ContextCompat.checkSelfPermission(this, CAMERA_ACTIVITY_PERMISSIONS[2]) == PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(this, CAMERA_ACTIVITY_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED;
     }
 
     // Before recording a video, check if the RECORD_AUDIO permission was granted by the user
     private boolean recordAudioPermissionGranted() {
         return ContextCompat.checkSelfPermission(this, CAMERA_ACTIVITY_PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    // Before capturing a photo or video, check if READ and WRITE permissions are granted by the user
+    private boolean readExternalStoragePermissionGranted() {
+        return ContextCompat.checkSelfPermission(this, CAMERA_ACTIVITY_PERMISSIONS[2]) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private boolean writeExternalStoragePermissionGranted() {
+        return ContextCompat.checkSelfPermission(this, CAMERA_ACTIVITY_PERMISSIONS[3]) == PackageManager.PERMISSION_GRANTED;
     }
 
     // If all permissions were not already granted by the user, ask the user for these permissions at runtime
@@ -247,6 +249,11 @@ public class MyCameraActivity extends AppCompatActivity {
                         @Override
                         public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                             Snackbar.make(rootView, "Photo has been saved successfully", Snackbar.LENGTH_SHORT).show();
+                            Uri photoUri = outputFileResults.getSavedUri();
+                            Intent addImageToMyGallery = new Intent(MyCameraActivity.this, MyGalleryFragment.class);
+                            assert photoUri != null;
+                            addImageToMyGallery.putExtra("photoUri", photoUri.toString());
+                            setIntent(addImageToMyGallery);
                         }
 
                         // If the photo has not successfully saved, return an error message/Snackbar

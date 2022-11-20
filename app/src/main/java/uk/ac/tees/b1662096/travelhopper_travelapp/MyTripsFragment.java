@@ -1,9 +1,12 @@
 package uk.ac.tees.b1662096.travelhopper_travelapp;
 
-import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,16 +15,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.FragmentMyGalleryBinding;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.ActivityMainBinding;
+import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.FragmentMyTripsBinding;
+import uk.ac.tees.b1662096.travelhopper_travelapp.room.TripViewModel;
 
 
 public class MyTripsFragment extends Fragment {
 
-    private Context myTripsFragmentContext;
+    private FragmentMyTripsBinding fragmentMyTripsBinding;
 
-    private FragmentMyGalleryBinding fragmentMyGalleryBinding;
+    private MyTripsRecyclerViewAdapter myTripsRecyclerViewAdapter;
 
-    private static final String ARG_COLUMN_COUNT = "grid-column-count";
+    private TripViewModel tripViewModel;
+
+    private static final String INSTANCE_ARG = "grid-column-count";
     private int gridColumnCount = 2;
 
     /**
@@ -32,42 +41,64 @@ public class MyTripsFragment extends Fragment {
     }
 
     @SuppressWarnings("unused")
-    public static MyTripsFragment newInstance(int columnCount) {
-        MyTripsFragment fragment = new MyTripsFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
+    public static MyTripsFragment getNewInstance() {
+        MyTripsFragment myTripsFragment = new MyTripsFragment();
+        Bundle fragmentBundle = new Bundle();
+        myTripsFragment.setArguments(fragmentBundle);
+        return myTripsFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            gridColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
+//        if (getArguments() != null) {
+//            gridColumnCount = getArguments().getInt(INSTANCE_ARG);
+//        }
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater fragmentInflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        fragmentMyGalleryBinding = FragmentMyGalleryBinding.inflate(inflater, container, false);
-        View fragmentView = fragmentMyGalleryBinding.getRoot();
+        // Inflate the root view from the layout of this fragment and then return it
+        fragmentMyTripsBinding = FragmentMyTripsBinding.inflate(fragmentInflater, container, false);
+        View rootFragmentView = fragmentMyTripsBinding.getRoot();
+        FloatingActionButton addNewTripButton = fragmentMyTripsBinding.addNewTripButton;
 
-        myTripsFragmentContext = fragmentView.getContext();
+        // Once the button is clicked, the CreateNewTripFragment will launch in the current fragment's parent layout
+        addNewTripButton.setOnClickListener(navigateForward -> {
+            FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(fragmentMyTripsBinding.myTripsFragmentLayout.getId(), CreateNewTripFragment.getNewInstance());
+            fragmentTransaction.setReorderingAllowed(true);
+            fragmentTransaction.commit();
+        });
 
-        // Set the adapter
-        if (fragmentView instanceof RecyclerView) {
-            RecyclerView recyclerView = (RecyclerView) fragmentView;
-            if (gridColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(myTripsFragmentContext));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(myTripsFragmentContext, gridColumnCount));
-            }
-//            recyclerView.setAdapter(new MyTripsRecyclerViewAdapter(PlaceholderContent.ITEMS));
+        // Set up the LayoutManager for the RecyclerView
+        RecyclerView myTripsRecyclerView = fragmentMyTripsBinding.myTripsRecyclerView;
+        if (gridColumnCount <= 1) {
+            myTripsRecyclerView.setLayoutManager(new LinearLayoutManager(myTripsRecyclerView.getContext()));
+        } else {
+            myTripsRecyclerView.setLayoutManager(new GridLayoutManager(myTripsRecyclerView.getContext(), gridColumnCount));
         }
-        return fragmentView;
+        myTripsRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        // Set up the adapter for the RecyclerView
+        MyTripsRecyclerViewAdapter myTripsRecyclerViewAdapter = new MyTripsRecyclerViewAdapter(new MyTripsRecyclerViewAdapter.TripEntityDiff());
+//            TripViewModel tripViewModel = new ViewModelProvider(this).get(TripViewModel.class);
+//            tripViewModel.getAllTrips().observe(getViewLifecycleOwner(), tripEntityList -> myTripsRecyclerViewAdapter.submitList(tripEntityList));
+        myTripsRecyclerView.setAdapter(myTripsRecyclerViewAdapter);
+
+        return rootFragmentView;
     }
+
+    @Override
+    public void onViewCreated(@NonNull View fragmentView, @Nullable Bundle savedInstanceState) {
+        fragmentMyTripsBinding.myTripsRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        fragmentMyTripsBinding = null;
+    }
+
 }

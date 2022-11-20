@@ -8,34 +8,42 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
 public interface TravelHopperDAO {
-    @Query("SELECT * FROM MediaEntity")
-    LiveData<List<MediaEntity>> getAllMedia();
 
-    @Query("SELECT * FROM MediaEntity WHERE mediaID IN (:mediaIDs)")
-    LiveData<List<MediaEntity>> getAllMediaByID(int[] mediaIDs);
+    @Query("SELECT * FROM tripEntity")
+    LiveData<List<TripEntity>> getAllTrips();
 
-    @Query("SELECT * FROM MediaEntity ORDER BY media_name ASC")
-    LiveData<List<MediaEntity>> getAllMediaAlphabetically();
+    @Query("SELECT * FROM tripEntity WHERE tripID = :tripID")
+    LiveData<List<TripEntity>> getTripsByID(int tripID);
 
-    @Query("SELECT * FROM MediaEntity WHERE media_favourite LIKE :isFavourite")
-    LiveData<List<MediaEntity>> findFavouriteMedia(boolean isFavourite);
+    @Query("SELECT * FROM tripEntity ORDER BY trip_name ASC")
+    LiveData<List<TripEntity>> getAllTripsAlphabetically();
+
+    @Query("SELECT * FROM tripEntity WHERE trip_location = :tripLocation")
+    LiveData<List<TripEntity>> getTripByLocation(String tripLocation);
+
+    @Query("SELECT * FROM tripEntity WHERE trip_date = :tripDate")
+    LiveData<List<TripEntity>> getTripByDate(Date tripDate);
+
+    @Query("SELECT * FROM tripEntity WHERE trip_favourite LIKE :tripIsFavourite")
+    LiveData<List<TripEntity>> findFavouriteTrip(boolean tripIsFavourite);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertMedia(MediaEntity mediaEntity);
+    void insertTripEntity(TripEntity tripEntity);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAllMedia(List<MediaEntity> allMediaEntities);
+    void insertAllTripEntities(List<TripEntity> allTripEntities);
 
     @Update
-    void updateAllMedia(List<MediaEntity> allMediaEntities);
+    void updateAllTripsEntities(List<TripEntity> allTripEntities);
 
     @Delete
-    void deleteMedia(MediaEntity mediaEntity);
+    void deleteTripEntity(TripEntity tripEntity);
 
     @Delete
-    void deleteAllMedia(List<MediaEntity> allMediaEntities);
+    void deleteAllTripEntities(List<TripEntity> allTripEntities);
 }

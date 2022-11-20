@@ -5,7 +5,9 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity
+import java.util.Date;
+
+@Entity(tableName = "tripEntity")
 public class TripEntity {
     @PrimaryKey
     @NonNull
@@ -15,16 +17,24 @@ public class TripEntity {
     @ColumnInfo(name = "trip_name")
     private final String tripName;
 
+    @ColumnInfo(name = "trip_location")
+    private final String tripLocation;
+
+    @ColumnInfo(name = "trip_details")
+    private final String tripDetails;
+
     @ColumnInfo(name = "trip_date")
-    private final String tripDate;
+    private final Date tripDate;
 
     @NonNull
     @ColumnInfo(name = "trip_favourite")
     private final boolean tripFavourite;
 
-    public TripEntity(int tripID, @NonNull String tripName, @NonNull String tripDate, boolean tripFavourite) {
+    public TripEntity(int tripID, @NonNull String tripName, String tripLocation, String tripDetails, @NonNull Date tripDate, boolean tripFavourite) {
         this.tripID = tripID;
         this.tripName = tripName;
+        this.tripLocation = tripLocation;
+        this.tripDetails = tripDetails;
         this.tripDate = tripDate;
         this.tripFavourite = tripFavourite;
     }
@@ -39,12 +49,20 @@ public class TripEntity {
         return tripName;
     }
 
-    public String getTripDate() {
+    public String getTripDetails() {
+        return tripDetails;
+    }
+
+    public String getTripLocation() {
+        return tripLocation;
+    }
+
+    public Date getTripDate() {
         return tripDate;
     }
 
-    @NonNull
     public boolean isTripFavourite() {
         return tripFavourite;
     }
+
 }
