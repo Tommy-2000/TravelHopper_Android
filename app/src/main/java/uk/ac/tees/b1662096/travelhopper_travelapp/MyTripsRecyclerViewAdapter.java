@@ -1,59 +1,44 @@
 package uk.ac.tees.b1662096.travelhopper_travelapp;
 
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.FragmentMyTripsBinding;
-import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.TripCardViewBinding;
-import uk.ac.tees.b1662096.travelhopper_travelapp.room.MediaEntity;
 import uk.ac.tees.b1662096.travelhopper_travelapp.room.TripEntity;
 
-import java.util.List;
+
+public class MyTripsRecyclerViewAdapter extends ListAdapter<TripEntity, MyTripsViewHolder> {
 
 
-public class MyTripsRecyclerViewAdapter extends RecyclerView.Adapter<MyTripsRecyclerViewAdapter.ViewHolder> {
-
-    private final List<TripEntity> tripEntityList;
-
-    public MyTripsRecyclerViewAdapter(List<TripEntity> tripEntityItems) {
-        tripEntityList = tripEntityItems;
+    public MyTripsRecyclerViewAdapter(DiffUtil.ItemCallback<TripEntity> diffCallback) {
+        super(diffCallback);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView tripName;
-        public final TextView tripDate;
-        public final CheckBox tripFavourite;
+    @NonNull
+    @Override
+    public MyTripsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return MyTripsViewHolder.newInstanceViewHolder(LayoutInflater.from(parent.getContext()), parent);
+    }
 
-        public ViewHolder(TripCardViewBinding binding) {
-            super(binding.getRoot());
-            tripName = binding.tripTitle;
-            tripDate = binding.tripDate;
-            tripFavourite = binding.tripFavouriteIcon;
+    @Override
+    public void onBindViewHolder(final MyTripsViewHolder myTripsViewHolder, int position) {
+        TripEntity currentTrip = getItem(position);
+        myTripsViewHolder.bindViewHolder(currentTrip.getTripName(), currentTrip.getTripDate(), currentTrip.getTripLocation(), currentTrip.isTripFavourite());
+    }
+
+
+    public static class TripEntityDiff extends DiffUtil.ItemCallback<TripEntity> {
+        @Override
+        public boolean areItemsTheSame(TripEntity oldTrip, TripEntity newTrip) {
+            return oldTrip.getTripID() == newTrip.getTripID();
+        }
+
+        @Override
+        public boolean areContentsTheSame(TripEntity oldTrip, TripEntity newTrip) {
+            return oldTrip.getTripName().equals(newTrip.getTripName());
         }
     }
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        return new ViewHolder(TripCardViewBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
-
-    }
-
-    @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.tripName.setText(tripEntityList.get(position).getTripName());
-        holder.tripDate.setText(tripEntityList.get(position).getTripDate());
-        holder.tripFavourite.setChecked(tripEntityList.get(position).isTripFavourite());
-    }
-
-    @Override
-    public int getItemCount() {
-        return tripEntityList.size();
-    }
-
 }

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/createNewTripFragmentLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_scrollFlags="exitUntilCollapsed"
+    tools:context=".CreateNewTripFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/navigation_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/collapsingToolbarLayoutLargeSize"
+            style="?attr/collapsingToolbarLayoutLargeStyle"
+            android:background="@android:color/transparent">
+
+
+            <ImageView
+                android:id="@+id/media_frame_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/media_content_description"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop" />
+
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/createNewTripFragmentToolbar"
+                style="@style/TextAppearance.Material3.DisplayMedium"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                android:elevation="0dp"
+                app:title="@string/create_new_trip_title" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/navigation_top_bar"
+        android:layout_marginTop="150dp"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/content_divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            app:dividerColor="@color/azure_blue"
+            app:dividerThickness="5dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_trip_name"
+            style="?attr/textInputOutlinedDenseStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/content_divider"
+            app:endIconMode="clear_text"
+            app:startIconContentDescription="@string/trip_name_content_description"
+            app:startIconDrawable="@drawable/ic_title_icon">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_trip_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/trip_name_content_description" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_trip_location"
+            style="?attr/textInputOutlinedDenseStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/input_trip_name"
+            app:endIconMode="clear_text"
+            app:startIconContentDescription="@string/trip_location_content_description"
+            app:startIconDrawable="@drawable/ic_location_icon">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_trip_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/trip_location_content_description" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_trip_details"
+            style="?attr/textInputOutlinedDenseStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/input_trip_location"
+            app:endIconMode="clear_text"
+            app:startIconContentDescription="@string/trip_details_content_description"
+            app:startIconDrawable="@drawable/ic_location_icon">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_trip_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/trip_details_content_description"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_trip_date"
+            style="?attr/textInputOutlinedDenseStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/input_trip_details"
+            app:endIconMode="clear_text"
+            app:startIconContentDescription="@string/trip_date_content_description"
+            app:startIconDrawable="@drawable/ic_calendar_icon">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_trip_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/trip_date_content_description"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    </RelativeLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addTripToFavouritesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/navigation_top_bar"
+        app:layout_anchorGravity="bottom|end"
+        android:src="@drawable/ic_favourite_outlined_icon"
+        android:contentDescription="@string/add_trip_to_favourites" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/createNewTripButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="20dp"
+        android:contentDescription="@string/add_new_trip"
+        android:elevation="10dp" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

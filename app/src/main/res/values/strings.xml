@@ -2,12 +2,12 @@
     <string name="app_name">TravelHopper</string>
 
     <!-- Navigation Strings -->
-    <string name="home">Home</string>
-    <string name="trips">Trips</string>
-    <string name="gallery">Gallery</string>
-    <string name="camera">Camera</string>
-    <string name="map">Map</string>
-    <string name="settings">Settings</string>
+    <string name="my_home">My Home</string>
+    <string name="my_trips">My Trips</string>
+    <string name="my_gallery">My Gallery</string>
+    <string name="my_camera">My Camera</string>
+    <string name="my_map">My Map</string>
+    <string name="my_settings">My Settings</string>
 
     <!-- Permission/Intent Strings -->
     <string name="camera_permission_granted">Camera Permission Granted</string>
@@ -30,6 +30,7 @@
     <string name="my_gallery_title">My Gallery</string>
     <string name="my_map_title">My Map</string>
     <string name="my_settings_title">My Settings</string>
+    <string name="create_new_trip_title">Create New Trip</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
@@ -47,19 +48,23 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
     <!-- Content/Content Description Strings -->
-    <string name="media_name">Media Name</string>
-    <string name="media_content_description">Photo or Video Content</string>
     <string name="trip_title">Trip Title</string>
+    <string name="trip_name_content_description">Trip name</string>
+    <string name="trip_location_content_description">Trip location</string>
+    <string name="trip_details_content_description">Trip details</string>
+    <string name="trip_date_content_description">Trip date</string>
     <string name="trip_secondary_title">Trip Secondary Title</string>
     <string name="trip_content_text">Trip Content Text</string>
+    <string name="media_content_description">Photo or Video</string>
     <string name="favourite_button">Favourite Button</string>
     <string name="camera_button">Camera Button</string>
-    <string name="add_media">Add Media</string>
+    <string name="add_media">Add Photo or Video</string>
     <string name="filter_string">Filter</string>
     <string name="favourites">Favourites</string>
     <string name="newer">Newer</string>
     <string name="older">Older</string>
-    <string name="create_new_trip">Create New Trip</string>
+    <string name="add_new_trip">Add New Trip</string>
     <string name="switch_cameras">Switch Cameras</string>
+    <string name="add_trip_to_favourites">Add trip to favourites</string>
 
 </resources>

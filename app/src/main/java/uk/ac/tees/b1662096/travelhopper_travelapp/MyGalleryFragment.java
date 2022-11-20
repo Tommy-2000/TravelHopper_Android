@@ -2,18 +2,20 @@ package uk.ac.tees.b1662096.travelhopper_travelapp;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -21,22 +23,25 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
 
 import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.FragmentMyGalleryBinding;
 
 
 public class MyGalleryFragment extends Fragment {
 
-    private Context myGalleryFragmentContext;
-
     private FragmentMyGalleryBinding fragmentMyGalleryBinding;
+
+    private View rootFragmentView;
 
     private static final int READ_EXTERNAL_STORAGE_CODE = 101;
 
+    private final ArrayList<Uri> galleryMediaList = new ArrayList<>();
+
     private static final String ARG_COLUMN_COUNT = "grid-column-count";
     private int gridColumnCount = 2;
-
-    private FloatingActionButton addPhotoButton;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -46,12 +51,12 @@ public class MyGalleryFragment extends Fragment {
     }
 
     @SuppressWarnings("unused")
-    public static MyGalleryFragment newInstance(int columnCount) {
-        MyGalleryFragment fragment = new MyGalleryFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
+    public static MyGalleryFragment getInstance(int columnCount) {
+        MyGalleryFragment myGalleryFragment = new MyGalleryFragment();
+        Bundle fragmentBundle = new Bundle();
+        fragmentBundle.putInt(ARG_COLUMN_COUNT, columnCount);
+        myGalleryFragment.setArguments(fragmentBundle);
+        return myGalleryFragment;
     }
 
     @Override
@@ -61,64 +66,74 @@ public class MyGalleryFragment extends Fragment {
             gridColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
 
-        retrieveMediaFromStorage();
-
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater fragmentInflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        fragmentMyGalleryBinding = FragmentMyGalleryBinding.inflate(inflater, container, false);
-        View fragmentView = fragmentMyGalleryBinding.getRoot();
+        // Inflate the root view from the layout of this fragment and then return it
+        fragmentMyGalleryBinding = FragmentMyGalleryBinding.inflate(fragmentInflater, container, false);
+        rootFragmentView = fragmentMyGalleryBinding.getRoot();
 
-        myGalleryFragmentContext = fragmentView.getContext();
+        FloatingActionButton addMediaButton = fragmentMyGalleryBinding.addMediaButton;
 
-        addPhotoButton = fragmentMyGalleryBinding.addPhotoButton;
+        // Once FAB button is clicked, launch an activity to allow for the user to choose multiple photos or videos
+        addMediaButton.setOnClickListener(view -> getMediaFromExternalStorage());
 
-        // Once FAB button is clicked, launch an activity to allow for the user to choose a photo
-        addPhotoButton.setOnClickListener(view -> {
-            if (ContextCompat.checkSelfPermission(myGalleryFragmentContext, Manifest.permission.READ_EXTERNAL_STORAGE) !=
-            PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions((Activity) myGalleryFragmentContext, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_CODE);
-            } else {
-                Intent getPhotos = new Intent(Intent.ACTION_GET_CONTENT);
-                getPhotos.setType("image/*");
-                getPhotos.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                Intent photoChooser = Intent.createChooser(getPhotos, "Select Picture");
-                if (getPhotos.resolveActivity(requireActivity().getPackageManager()) != null) {
-                    startActivity(photoChooser);
-                }
-            }
-        });
+        // Setup the adapter with the correct layout
+        RecyclerView myGalleryRecyclerView = fragmentMyGalleryBinding.myGalleryRecyclerView;
+        myGalleryRecyclerView.setLayoutManager(new GridLayoutManager(rootFragmentView.getContext(), gridColumnCount));
+        myGalleryRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        myGalleryRecyclerView.setAdapter(new MyGalleryRecyclerViewAdapter(galleryMediaList));
 
-
-        // Set the adapter
-        if (fragmentView instanceof RecyclerView) {
-            RecyclerView recyclerView = (RecyclerView) fragmentView;
-            if (gridColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(myGalleryFragmentContext));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(myGalleryFragmentContext, gridColumnCount));
-            }
-//            recyclerView.setAdapter(new MyGalleryRecyclerViewAdapter());
-        }
-        return fragmentView;
+        return rootFragmentView;
     }
 
+    private void getMediaFromExternalStorage() {
+        if (ContextCompat.checkSelfPermission(requireActivity().getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_CODE);
+        } else {
+            Intent getMediaFromGallery = new Intent(Intent.ACTION_GET_CONTENT);
+            getMediaFromGallery.setType("image/*");
+            String[] mediaMimeTypes = {"image/*", "video/*"};
+            getMediaFromGallery.putExtra(Intent.EXTRA_MIME_TYPES, mediaMimeTypes);
+            getMediaFromGallery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            if (getMediaFromGallery.resolveActivity(requireActivity().getPackageManager()) != null) {
+                mediaChooserResultLauncher.launch(getMediaFromGallery);
+            }
+        }
+    }
+
+    ActivityResultLauncher<Intent> mediaChooserResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            activityResult -> {
+                if (activityResult.getResultCode() == Activity.RESULT_OK) {
+                    Intent retrievedMediaData = activityResult.getData();
+                    assert retrievedMediaData != null;
+                    if (retrievedMediaData.getClipData() != null) {
+                        int clipDataCount = retrievedMediaData.getClipData().getItemCount();
+                        for (int i = 0; i < clipDataCount; i++) {
+                            galleryMediaList.add(retrievedMediaData.getClipData().getItemAt(i).getUri());
+                        }
+                    } else if (retrievedMediaData.getData() != null) {
+                        Uri mediaUriData = retrievedMediaData.getData();
+                        galleryMediaList.add(mediaUriData);
+                    }
+                } else {
+                    Snackbar.make(rootFragmentView, "Media has not been picked", Snackbar.LENGTH_SHORT).show();
+                }
+            });
+
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        fragmentMyGalleryBinding.myGalleryRecyclerview.setVisibility(View.VISIBLE);
+    public void onViewCreated(@NonNull View fragmentView, @Nullable Bundle savedInstanceState) {
+        fragmentMyGalleryBinding.myGalleryRecyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         fragmentMyGalleryBinding = null;
-    }
-
-
-    private void retrieveMediaFromStorage() {
-
     }
 
 }

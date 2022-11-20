@@ -1,36 +1,33 @@
 package uk.ac.tees.b1662096.travelhopper_travelapp;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.room.Room;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.color.DynamicColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import android.Manifest;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
 import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.ActivityMainBinding;
-import uk.ac.tees.b1662096.travelhopper_travelapp.room.TravelHopperDatabase;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ActivityMainBinding activityMainBinding;
 
-    private static final String[] TRAVELHOPPER_PERMISSIONS = new String[]{
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-    private static final int TRAVELHOPPER_PERMISSIONS_REQUEST_CODE = 10;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,56 +37,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         View rootView = activityMainBinding.getRoot();
         setContentView(rootView);
 
-        // Set up Navigation between the four different Fragments
-        FragmentManager supportFragmentManager = getSupportFragmentManager();
-        NavHostFragment navHostFragment = (NavHostFragment) supportFragmentManager.findFragmentById(R.id.navHostFragment);
-
-        // Initialise NavController to setup the NavController (which will be the BottomNavigationView)
+        // Set up Navigation between the four different Fragments in the BottomNavigationView by using NavHostFragment
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(activityMainBinding.navHostFragment.getId());
         assert navHostFragment != null;
         NavController navController = navHostFragment.getNavController();
-        BottomAppBar bottomAppBar = activityMainBinding.bottomAppBar;
-        NavigationUI.setupWithNavController(bottomAppBar, navController);
+        BottomNavigationView bottomNavigationView = findViewById(activityMainBinding.bottomNavBar.getId());
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
         // Initialise navigation from MainActivity to MyCameraActivity
         FloatingActionButton myCameraActivityButton = activityMainBinding.myCameraButton;
         Intent navigateToMyCamera = new Intent(this, MyCameraActivity.class);
         myCameraActivityButton.setOnClickListener(view -> startActivity(navigateToMyCamera));
 
-//        // Request read and write permissions for accessing user photos and videos
-//        try {
-//            if (readExternalStoragePermissionsGranted() && writeExternalStoragePermissionsGranted()) {
-//                getMediaFromStorage();
-//            } else {
-//                requestTravelHopperPermissions();
-//            }
-//        } catch ()
-
-//        // Initialise the Room database for MyFavouritesFragment
-//        TravelHopperDatabase travelHopperDatabase = Room.databaseBuilder(getApplicationContext(), TravelHopperDatabase.class, "travelhopper_database").build();
     }
-
-//    private boolean readExternalStoragePermissionsGranted() {
-//        return false;
-//    }
-//
-//    private boolean writeExternalStoragePermissionsGranted() {
-//        return false;
-//    }
-//
-//    private void requestTravelHopperPermissions() {
-//
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
+        NavController navController = Navigation.findNavController(this, activityMainBinding.navHostFragment.getId());
         return NavigationUI.onNavDestinationSelected(item, navController)
                 || super.onOptionsItemSelected(item);
     }
-
-    //    private void getMediaFromStorage() {
-//
-//    }
 
 
     @Override

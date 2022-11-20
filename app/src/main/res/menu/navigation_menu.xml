@@ -3,24 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/my_home_fragment"
+        android:id="@+id/myHomeFragment"
         android:icon="@drawable/ic_home_icon"
-        android:title="@string/home"
+        android:title="@string/my_home"
         app:showAsAction="always" />
 
-    <item android:id="@+id/my_trips_fragment"
-        android:title="@string/trips"
+    <item
+        android:id="@+id/myTripsFragment"
         android:icon="@drawable/ic_trips_icon"
-        app:showAsAction="always"/>
+        android:title="@string/my_trips"
+        app:showAsAction="always" />
 
-    <item android:id="@+id/my_gallery_fragment"
-        android:title="@string/gallery"
+    <item
+        android:id="@+id/myGalleryFragment"
         android:icon="@drawable/ic_gallery_icon"
-        app:showAsAction="always"/>
+        android:title="@string/my_gallery"
+        app:showAsAction="always" />
 
-    <item android:id="@+id/my_map_fragment"
-        android:title="@string/map"
+    <item
+        android:id="@+id/myMapFragment"
         android:icon="@drawable/ic_map_icon"
-        app:showAsAction="always"/>
-
+        android:title="@string/my_map"
+        app:showAsAction="always" />
 </menu>

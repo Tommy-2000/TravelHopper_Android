@@ -2,27 +2,23 @@ package uk.ac.tees.b1662096.travelhopper_travelapp;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.FragmentMyMapBinding;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link MyMapFragment#newInstance} factory method to
+ * Use the {@link MyMapFragment#getNewInstance} factory method to
  * create an instance of this fragment.
  */
 public class MyMapFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private FragmentMyMapBinding fragmentMyMapBinding;
 
     public MyMapFragment() {
         // Required empty public constructor
@@ -30,35 +26,33 @@ public class MyMapFragment extends Fragment {
 
     /**
      * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * this fragment.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment MapFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static MyMapFragment newInstance(String param1, String param2) {
-        MyMapFragment fragment = new MyMapFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @SuppressWarnings("unused")
+    public static MyMapFragment getNewInstance() {
+        MyMapFragment myMapFragment = new MyMapFragment();
+        Bundle fragmentBundle = new Bundle();
+        myMapFragment.setArguments(fragmentBundle);
+        return myMapFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+//        if (getArguments() != null) {
+//            mParam1 = getArguments().getString(ARG_PARAM1);
+//            mParam2 = getArguments().getString(ARG_PARAM2);
+//        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater fragmentInflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_map, container, false);
+        // Inflate the root view from the layout of this fragment and then return it
+        fragmentMyMapBinding = FragmentMyMapBinding.inflate(fragmentInflater, container, false);
+        View rootFragmentView = fragmentMyMapBinding.getRoot();
+        return rootFragmentView;
     }
 }
