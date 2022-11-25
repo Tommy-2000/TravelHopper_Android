@@ -26,7 +26,7 @@ public class MyTripsRecyclerViewAdapter extends ListAdapter<TripEntity, MyTripsV
     @Override
     public void onBindViewHolder(final MyTripsViewHolder myTripsViewHolder, int position) {
         TripEntity currentTrip = getItem(position);
-        myTripsViewHolder.bindViewHolder(currentTrip.getTripName(), currentTrip.getTripDate(), currentTrip.getTripLocation(), currentTrip.isTripFavourite());
+        myTripsViewHolder.bindViewHolder(currentTrip.getTripName(), currentTrip.getTripLocation(), currentTrip.getTripStartDate(), currentTrip.getTripEndDate(), currentTrip.isTripFavourite());
     }
 
 

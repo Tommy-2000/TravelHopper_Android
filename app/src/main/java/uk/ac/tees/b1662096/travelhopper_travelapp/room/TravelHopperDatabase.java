@@ -2,16 +2,16 @@ package uk.ac.tees.b1662096.travelhopper_travelapp.room;
 
 import android.content.Context;
 
+import androidx.room.AutoMigration;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {TripEntity.class}, version = 1, exportSchema = false)
+@Database(entities = {TripEntity.class}, version = 1, autoMigrations = {@AutoMigration(from = 1, to = 2)})
 @TypeConverters({TripDateConverters.class})
 public abstract class TravelHopperDatabase extends RoomDatabase {
     public abstract TravelHopperDAO travelHopperDAO();
@@ -30,4 +30,5 @@ public abstract class TravelHopperDatabase extends RoomDatabase {
         }
         return DATABASE_INSTANCE;
     }
+
 }
