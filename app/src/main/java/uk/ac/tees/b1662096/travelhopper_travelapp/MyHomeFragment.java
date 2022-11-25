@@ -56,4 +56,11 @@ public class MyHomeFragment extends Fragment {
 
         return rootFragmentView;
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        fragmentMyHomeBinding = null;
+    }
+
 }

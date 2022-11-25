@@ -1,71 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:id="@+id/tripCardView"
+    style="?attr/materialCardViewElevatedStyle"
+    android:layout_width="200dp"
     android:layout_height="wrap_content"
     android:clickable="true"
-    android:focusable="true"
-    style="?attr/materialCardViewElevatedStyle">
+    android:focusable="true">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/tripCardContent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <ImageView
-            android:layout_height="wrap_content"
+            android:id="@+id/tripMedia"
             android:layout_width="wrap_content"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/media_content_description"/>
+            android:layout_height="wrap_content" />
 
-        <LinearLayout
+        <CheckBox
+            android:id="@+id/tripFavouriteIcon"
+            style="?attr/materialIconButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tripMedia"
+            android:button="@drawable/sl_favourite_24dp"
+            android:contentDescription="@string/favourite_button" />
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/trip_name"
+                android:id="@+id/tripName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
                 android:text="@string/trip_title"
-                android:textAppearance="?attr/textAppearanceTitleMedium" />
+                android:textAppearance="?attr/textAppearanceTitleLarge" />
 
             <TextView
-                android:id="@+id/trip_date"
+                android:id="@+id/tripStartDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
-                android:text="@string/trip_secondary_title"
-                android:textAppearance="?attr/textAppearanceSubtitle1" />
-
-            <TextView
-                android:id="@+id/trip_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
+                android:layout_below="@id/tripName"
+                android:layout_marginTop="10dp"
                 android:text="@string/trip_secondary_title"
                 android:textAppearance="?attr/textAppearanceSubtitle2" />
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/trip_favourite_icon"
+            <TextView
+                android:id="@+id/tripEndDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:button="@drawable/sl_favourite_24dp"
-                style="?attr/materialIconButtonOutlinedStyle"
-                android:contentDescription="@string/favourite_button"/>
+                android:layout_below="@id/tripStartDate"
+                android:layout_marginTop="10dp"
+                android:text="@string/trip_secondary_title"
+                android:textAppearance="?attr/textAppearanceSubtitle2" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/tripLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tripEndDate"
+                android:layout_marginTop="10dp"
+                android:text="@string/trip_secondary_title"
+                android:textAppearance="?attr/textAppearanceSubtitle2" />
 
-    </LinearLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 </com.google.android.material.card.MaterialCardView>

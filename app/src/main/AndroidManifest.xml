@@ -4,7 +4,8 @@
 
     <!-- Android Features -->
     <uses-feature android:name="android.hardware.wifi" />
-    <uses-feature android:name="android.hardware.camera.any" /> <!-- Android Permissions -->
+    <uses-feature android:name="android.hardware.camera.any" />
+    <!-- Android Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
@@ -35,9 +36,9 @@
         android:theme="@style/Theme.TravelHopperTravelApp"
         tools:targetApi="31">
 
-<!--        <meta-data-->
-<!--            android:name="com.google.android.geo.API_KEY"-->
-<!--            android:value="${MAPS_API_KEY}" />-->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="MAPS_API_KEY" />
 
         <activity
             android:name=".MainActivity"

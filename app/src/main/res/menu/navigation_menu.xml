@@ -25,4 +25,9 @@
         android:icon="@drawable/ic_map_icon"
         android:title="@string/my_map"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/empty_spacer"
+        android:title="@string/empty_string"
+        app:showAsAction="always" />
 </menu>

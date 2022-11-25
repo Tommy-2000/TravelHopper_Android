@@ -245,15 +245,16 @@ public class MyCameraActivity extends AppCompatActivity {
             // Capture the photo with the output options and record the capture from callback to output a new photo file
             imageCapture.takePicture(photoOutputFileOptions, ContextCompat.getMainExecutor(this),
                     new ImageCapture.OnImageSavedCallback() {
-                        // If the photo has successfully saved, return a success message/Snackbar
+                        // If the photo has successfully saved, return a success message/Snackbar and pass the new image to the CreateNewTripFragment
                         @Override
                         public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                             Snackbar.make(rootView, "Photo has been saved successfully", Snackbar.LENGTH_SHORT).show();
+                            // Pass the image to the MyTripsFragment using an Intent
                             Uri photoUri = outputFileResults.getSavedUri();
-                            Intent addImageToMyGallery = new Intent(MyCameraActivity.this, MyGalleryFragment.class);
                             assert photoUri != null;
-                            addImageToMyGallery.putExtra("photoUri", photoUri.toString());
-                            setIntent(addImageToMyGallery);
+                            Intent passImageToNewTrip = new Intent(MyCameraActivity.this, MyTripsFragment.class);
+                            passImageToNewTrip.putExtra("CAPTURED_PHOTO", photoUri);
+                            startActivity(passImageToNewTrip);
                         }
 
                         // If the photo has not successfully saved, return an error message/Snackbar
@@ -303,6 +304,7 @@ public class MyCameraActivity extends AppCompatActivity {
                                 if (!((VideoRecordEvent.Finalize) videoRecordEvent).hasError()) {
                                     videoCaptureButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_record_red_icon, getApplicationContext().getTheme()));
                                     Snackbar.make(rootView, "Video has been captured successfully", Snackbar.LENGTH_SHORT).show();
+
                                     // Clear the contents of the video once the recording has stopped
                                     videoContentValues.clear();
                                 } else {

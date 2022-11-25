@@ -9,13 +9,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Date;
+import java.util.Locale;
 
 import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.TripCardViewBinding;
 
 public class MyTripsViewHolder extends RecyclerView.ViewHolder {
 
     public final TextView tripName;
-    public final TextView tripDate;
+    public final TextView tripStartDate;
+    public final TextView tripEndDate;
     public final TextView tripLocation;
     public final CheckBox tripFavourite;
 
@@ -23,7 +25,8 @@ public class MyTripsViewHolder extends RecyclerView.ViewHolder {
         super(bindingTripCardView.getRoot());
         tripName = bindingTripCardView.tripName;
         tripLocation = bindingTripCardView.tripLocation;
-        tripDate = bindingTripCardView.tripDate;
+        tripStartDate = bindingTripCardView.tripStartDate;
+        tripEndDate = bindingTripCardView.tripEndDate;
         tripFavourite = bindingTripCardView.tripFavouriteIcon;
     }
 
@@ -33,10 +36,11 @@ public class MyTripsViewHolder extends RecyclerView.ViewHolder {
         return new MyTripsViewHolder(bindingTripCardView);
     }
 
-    public void bindViewHolder(String name, Date date, String location, boolean isFavourite) {
+    public void bindViewHolder(String name, String location, Long startDate, Long endDate, boolean isFavourite) {
         tripName.setText(name);
-        tripDate.setText(date.toString());
         tripLocation.setText(location);
+        tripStartDate.setText(String.format(Locale.getDefault(), startDate.toString()));
+        tripEndDate.setText(String.format(Locale.getDefault(), endDate.toString()));
         tripFavourite.setChecked(isFavourite);
     }
 }

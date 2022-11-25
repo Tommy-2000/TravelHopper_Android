@@ -52,7 +52,8 @@
     <string name="trip_name_content_description">Trip name</string>
     <string name="trip_location_content_description">Trip location</string>
     <string name="trip_details_content_description">Trip details</string>
-    <string name="trip_date_content_description">Trip date</string>
+    <string name="trip_start_date_content_description">Trip start date</string>
+    <string name="trip_end_date_content_description">Trip end date</string>
     <string name="trip_secondary_title">Trip Secondary Title</string>
     <string name="trip_content_text">Trip Content Text</string>
     <string name="media_content_description">Photo or Video</string>
@@ -66,5 +67,9 @@
     <string name="add_new_trip">Add New Trip</string>
     <string name="switch_cameras">Switch Cameras</string>
     <string name="add_trip_to_favourites">Add trip to favourites</string>
+    <string name="add_trip_to_my_trips">Add Trip to My Trips</string>
+    <string name="empty_string" />
+    <string name="settings_button">My Settings Button</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -5,12 +5,11 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.util.Date;
-
 @Entity(tableName = "tripEntity")
 public class TripEntity {
-    @PrimaryKey
     @NonNull
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "tripId")
     private final int tripID;
 
     @NonNull
@@ -20,22 +19,26 @@ public class TripEntity {
     @ColumnInfo(name = "trip_location")
     private final String tripLocation;
 
+    @ColumnInfo(name = "trip_start_date")
+    private final Long tripStartDate;
+
+    @ColumnInfo(name = "trip_end_date")
+    private final Long tripEndDate;
+
     @ColumnInfo(name = "trip_details")
     private final String tripDetails;
-
-    @ColumnInfo(name = "trip_date")
-    private final Date tripDate;
 
     @NonNull
     @ColumnInfo(name = "trip_favourite")
     private final boolean tripFavourite;
 
-    public TripEntity(int tripID, @NonNull String tripName, String tripLocation, String tripDetails, @NonNull Date tripDate, boolean tripFavourite) {
+    public TripEntity(int tripID, @NonNull String tripName, String tripLocation, @NonNull Long tripStartDate, @NonNull Long tripEndDate, String tripDetails, boolean tripFavourite) {
         this.tripID = tripID;
         this.tripName = tripName;
         this.tripLocation = tripLocation;
+        this.tripStartDate = tripStartDate;
+        this.tripEndDate = tripEndDate;
         this.tripDetails = tripDetails;
-        this.tripDate = tripDate;
         this.tripFavourite = tripFavourite;
     }
 
@@ -49,18 +52,23 @@ public class TripEntity {
         return tripName;
     }
 
-    public String getTripDetails() {
-        return tripDetails;
-    }
-
     public String getTripLocation() {
         return tripLocation;
     }
 
-    public Date getTripDate() {
-        return tripDate;
+    public Long getTripStartDate() {
+        return tripStartDate;
     }
 
+    public Long getTripEndDate() {
+        return tripEndDate;
+    }
+
+    public String getTripDetails() {
+        return tripDetails;
+    }
+
+    @NonNull
     public boolean isTripFavourite() {
         return tripFavourite;
     }
