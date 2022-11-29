@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,22 +21,23 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.IOException;
 import java.net.URLConnection;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.FragmentCreateNewTripBinding;
 import uk.ac.tees.b1662096.travelhopper_travelapp.room.TripEntity;
@@ -59,6 +59,20 @@ public class CreateNewTripFragment extends Fragment {
     private static final int READ_EXTERNAL_STORAGE_CODE = 101;
 
     private boolean isKeyboardVisible = false;
+
+    private MaterialToolbar fragmentToolbar;
+
+    private FloatingActionButton createNewTripButton;
+
+    private MaterialButton setTripAsFavouriteButton;
+
+    private ImageView newTripMedia;
+
+    private Bitmap mediaBitmap;
+
+    private boolean tripIsFavourite = false;
+
+    private Long tripStartDate, tripEndDate;
 
     public CreateNewTripFragment() {
         // Required empty public constructor
@@ -89,27 +103,25 @@ public class CreateNewTripFragment extends Fragment {
         fragmentCreateNewTripBinding = FragmentCreateNewTripBinding.inflate(fragmentInflater, container, false);
         rootFragmentView = fragmentCreateNewTripBinding.getRoot();
 
-
-        // Check if the keyboard appears when any text fields are clicked, then make the
-        rootFragmentView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-            Rect windowFrame = new Rect();
-            rootFragmentView.getWindowVisibleDisplayFrame(windowFrame);
-            int screenHeight = rootFragmentView.getRootView().getHeight();
-
-            int keyboardHeight = screenHeight - windowFrame.bottom;
-            if (keyboardHeight > screenHeight * 0.15) {
-                // If the user's keyboard is open, set the content view to be scrollable
-                if (!isKeyboardVisible) {
-                    isKeyboardVisible = true;
-                }
-            } else {
-                // If the user's keyboard is closed, set the content view to be static
-                if (isKeyboardVisible) {
-                    isKeyboardVisible = false;
-                }
-            }
-        });
-
+//        // Check if the keyboard appears when any text fields are clicked, then have the root layout fixed
+//        rootFragmentView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+//            Rect windowFrame = new Rect();
+//            rootFragmentView.getWindowVisibleDisplayFrame(windowFrame);
+//            int screenHeight = rootFragmentView.getRootView().getHeight();
+//
+//            int keyboardHeight = screenHeight - windowFrame.bottom;
+//            if (keyboardHeight > screenHeight * 0.15) {
+//                // If the user's keyboard is open, set the content view to be scrollable
+//                if (!isKeyboardVisible) {
+//                    isKeyboardVisible = true;
+//                }
+//            } else {
+//                // If the user's keyboard is closed, set the content view to be static
+//                if (isKeyboardVisible) {
+//                    isKeyboardVisible = false;
+//                }
+//            }
+//        });
 
         return rootFragmentView;
     }
@@ -119,22 +131,14 @@ public class CreateNewTripFragment extends Fragment {
     public void onViewCreated(@NonNull View rootFragmentView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(rootFragmentView, savedInstanceState);
 
+
         // Set the navigation back button in the toolbar to navigate to the previous fragment on the MainActivity
-        MaterialToolbar fragmentToolbar = fragmentCreateNewTripBinding.createNewTripFragmentToolbar;
+        fragmentToolbar = fragmentCreateNewTripBinding.childFragmentToolbar;
         fragmentToolbar.setNavigationIcon(R.drawable.ic_arrow_back_icon);
-        fragmentToolbar.setNavigationOnClickListener(navigateFragmentView -> {
-            FragmentTransaction parentFragmentTransaction = getParentFragmentManager().beginTransaction();
-            // Replace the current fragment for the previous fragment (MyTripsFragment)
-            parentFragmentTransaction.replace(fragmentCreateNewTripBinding.createNewTripFragmentLayout.getId(), MyTripsFragment.getNewInstance());
-            parentFragmentTransaction.setCustomAnimations(R.anim.fragment_slide_out_anim, R.anim.fragment_slide_in_anim);
-            // Ensure that this fragment is not added to the backstack
-            parentFragmentTransaction.addToBackStack(null);
-            parentFragmentTransaction.setReorderingAllowed(true);
-            parentFragmentTransaction.commit();
-            // Set the visibility of current fragment's layout and toolbar to gone when navigating back to previous fragment
-            fragmentToolbar.setVisibility(View.GONE);
-            fragmentCreateNewTripBinding.createNewTripFragmentLayout.setVisibility(View.GONE);
-        });
+        fragmentToolbar.setNavigationOnClickListener(navigateFragmentView -> navigateBack(fragmentToolbar));
+
+        // Get the ViewModel based on the requirements of the parent fragment (MyTripsFragment)
+        tripViewModel = new ViewModelProvider(requireParentFragment()).get(TripViewModel.class);
 
 
         // Get the TextFields from the view binding object
@@ -144,53 +148,70 @@ public class CreateNewTripFragment extends Fragment {
         TextInputEditText editTripEndDate = fragmentCreateNewTripBinding.editTripEndDate;
         TextInputEditText editTripDetails = fragmentCreateNewTripBinding.editTripDetails;
 
+        // Get the imageView from the view binding object
+        newTripMedia = fragmentCreateNewTripBinding.mediaFrameView;
+
+        // Get the FloatingActionButton from the view binding object
+        createNewTripButton = fragmentCreateNewTripBinding.createNewTripButton;
+
+        // Get the FloatingActionButton from the view binding object
+        setTripAsFavouriteButton = fragmentCreateNewTripBinding.addTripToFavouritesButton;
+
         // Initialise and show the DatePicker when either tripStartDate or tripEndDate fields are clicked
         editTripStartDate.setOnClickListener(view -> {
-            MaterialDatePicker<Long> materialDatePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Select start date").build();
-            materialDatePicker.show(getChildFragmentManager(), "tripStartDatePicker");
+            MaterialDatePicker<Long> materialDatePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Select Start Date").build();
+            materialDatePicker.show(getChildFragmentManager(), materialDatePicker.getTag());
+            SimpleDateFormat tripStartDateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+            tripStartDate = materialDatePicker.getSelection();
+            editTripStartDate.setText(tripStartDateFormat.format(tripStartDate));
         });
 
         editTripEndDate.setOnClickListener(view -> {
-            MaterialDatePicker<Long> materialDatePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Select start date").build();
-            materialDatePicker.show(getChildFragmentManager(), "tripEndDatePicker");
+            MaterialDatePicker<Long> materialDatePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Select End Date").build();
+            materialDatePicker.show(getChildFragmentManager(), materialDatePicker.getTag());
+            SimpleDateFormat tripEndDateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+            tripEndDate = materialDatePicker.getSelection();
+            editTripEndDate.setText(tripEndDateFormat.format(tripEndDate));
         });
 
-        // Get the imageView from the view binding object
-        ImageView newTripMedia = fragmentCreateNewTripBinding.mediaFrameView;
+        // If the button has been clicked, set tripIsFavourite to true
+        setTripAsFavouriteButton.addOnCheckedChangeListener((favouriteButton, isChecked) -> {
+            if (isChecked) {
+                tripIsFavourite = true;
+                favouriteButton.getIcon();
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_favourite_filled_icon);
+            } else {
+                tripIsFavourite = false;
+                favouriteButton.getIcon();
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_favourite_outlined_icon);
+            }
+        });
+
+        // Get media from the users gallery and add to the ImageView
         newTripMedia.setOnClickListener(view -> {
             getMediaFromGallery();
         });
 
-        // Get the ViewModel based on the requirements of the parent fragment (MyTripsFragment)
-        tripViewModel = new ViewModelProvider(requireParentFragment()).get(TripViewModel.class);
-
-        // Get the FloatingActionButton from the view binding object
-        FloatingActionButton createNewTripButton = fragmentCreateNewTripBinding.createNewTripButton;
         // Once button is clicked, call on the view model to insert a new trip
         createNewTripButton.setOnClickListener(insertTripToMyTrips -> {
-            tripViewModel.insertTrip(new TripEntity(0, editTripName.toString(), editTripLocation.toString(), Long.parseLong(editTripStartDate.toString()), Long.parseLong(editTripEndDate.toString()), editTripDetails.toString(), false));
-            FragmentTransaction parentFragmentTransaction = getParentFragmentManager().beginTransaction();
-            // Replace the current fragment for the previous fragment (MyTripsFragment)
-            parentFragmentTransaction.replace(fragmentCreateNewTripBinding.createNewTripFragmentLayout.getId(), MyTripsFragment.getNewInstance());
-            parentFragmentTransaction.setCustomAnimations(R.anim.fragment_slide_out_anim, R.anim.fragment_slide_in_anim);
-            // Ensure that this fragment is not added to the backstack
-            parentFragmentTransaction.addToBackStack(null);
-            parentFragmentTransaction.setReorderingAllowed(false);
-            parentFragmentTransaction.commit();
-            // Set the visibility of current fragment's layout and toolbar to gone when navigating back to previous fragment
-            fragmentToolbar.setVisibility(View.GONE);
-            fragmentCreateNewTripBinding.createNewTripFragmentLayout.setVisibility(View.GONE);
-        });
-
-        // Get the FloatingActionButton from the view binding object
-        FloatingActionButton addTripToFavouritesButton = fragmentCreateNewTripBinding.addTripToFavouritesButton;
-        addTripToFavouritesButton.setOnClickListener(view -> {
-            tripViewModel.insertFavouriteTrip(new TripEntity(0, editTripName.toString(), editTripLocation.toString(), Long.parseLong(editTripStartDate.toString()), Long.parseLong(editTripEndDate.toString()), editTripDetails.toString(), true), true);
-            Snackbar.make(rootFragmentView, "New trip has been added to your favourites", Snackbar.LENGTH_SHORT).show();
+            if (setTripAsFavouriteButton.isChecked()) {
+                addNewTrip(editTripName, editTripLocation, tripStartDate, tripEndDate, editTripDetails, tripIsFavourite);
+            }
         });
 
 
     }
+
+    private void addNewTrip(TextInputEditText editTripName, TextInputEditText editTripLocation, Long tripStartDate, Long tripEndDate, TextInputEditText editTripDetails, boolean tripIsFavourite) {
+        tripViewModel.insertTrip(new TripEntity(0, editTripName.toString(), editTripLocation.toString(), String.valueOf(mediaBitmap.getHeight()), tripStartDate, tripEndDate, editTripDetails.toString(), tripIsFavourite));
+        if (tripIsFavourite == true){
+            Snackbar.make(rootFragmentView, "New favourite trip has been added", Snackbar.LENGTH_SHORT).show();
+        } else {
+            Snackbar.make(rootFragmentView, "New trip has been added", Snackbar.LENGTH_SHORT).show();
+        }
+        navigateBack(fragmentToolbar);
+    }
+
 
     private void getMediaFromGallery() {
         if (ContextCompat.checkSelfPermission(requireActivity().getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) !=
@@ -237,24 +258,41 @@ public class CreateNewTripFragment extends Fragment {
                     // Check if intent's data is not null
                     if (retrievedMediaData.getData() != null) {
                         // Check if the media in the intent is an image
-                        if (isMediaImage(retrievedMediaData.getData().getPath())){
+                        if (isMediaImage(retrievedMediaData.getData().getPath())) {
                             Uri imageUriData = retrievedMediaData.getData();
                             try {
                                 // Convert the Uri from the intent into a Bitmap, then add the bitmap to the arrayList
-                                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.requireContext().getContentResolver(), imageUriData);
+                                mediaBitmap = MediaStore.Images.Media.getBitmap(this.requireContext().getContentResolver(), imageUriData);
+                                newTripMedia.setImageBitmap(mediaBitmap);
 
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         } else if (isMediaVideo(retrievedMediaData.getData().getPath())) {
-                            Bitmap videoThumbnailBitmap = ThumbnailUtils.createVideoThumbnail(retrievedMediaData.getData().getPath(), MediaStore.Video.Thumbnails.MICRO_KIND);
-
+                            String mediaDataPath = retrievedMediaData.getData().getPath();
+                            mediaBitmap = ThumbnailUtils.createVideoThumbnail(mediaDataPath, MediaStore.Video.Thumbnails.MICRO_KIND);
+                            newTripMedia.setImageBitmap(mediaBitmap);
                         }
                     }
                 } else {
                     Snackbar.make(rootFragmentView, "Media has not been picked", Snackbar.LENGTH_SHORT).show();
                 }
             });
+
+
+    private void navigateBack(MaterialToolbar fragmentToolbar) {
+        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+        // Replace the current fragment for the previous fragment (MyTripsFragment)
+        Fragment parentFragment = MyTripsFragment.getNewInstance();
+        fragmentTransaction.replace(fragmentCreateNewTripBinding.rootFragmentLayout.getId(), parentFragment);
+        fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_from_left_anim, R.anim.fragment_slide_to_right_anim);
+        // Ensure that this fragment is not added to the backstack
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.setReorderingAllowed(true);
+        fragmentTransaction.commit();
+        // Make sure that the FrameLayout for the child fragment disappears when navigating back to the parent fragment
+        fragmentCreateNewTripBinding.createNewTripFragmentLayout.setVisibility(View.GONE);
+    }
 
     @Override
     public void onDestroyView() {

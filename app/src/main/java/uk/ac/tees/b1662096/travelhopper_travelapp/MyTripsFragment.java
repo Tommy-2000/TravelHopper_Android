@@ -1,32 +1,34 @@
 package uk.ac.tees.b1662096.travelhopper_travelapp;
 
-import android.graphics.Rect;
+import android.annotation.SuppressLint;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.MenuRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.Objects;
-
-import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.ActivityMainBinding;
 import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.FragmentMyTripsBinding;
 import uk.ac.tees.b1662096.travelhopper_travelapp.room.TripViewModel;
 
@@ -75,20 +77,6 @@ public class MyTripsFragment extends Fragment {
         fragmentMyTripsBinding = FragmentMyTripsBinding.inflate(fragmentInflater, container, false);
         View rootFragmentView = fragmentMyTripsBinding.getRoot();
 
-        FloatingActionButton addNewTripButton = fragmentMyTripsBinding.addNewTripButton;
-
-        // Once the button is clicked, the CreateNewTripFragment will launch in the current fragment's parent layout
-        addNewTripButton.setOnClickListener(navigateToFragment -> {
-            FragmentTransaction childFragmentTransaction = getChildFragmentManager().beginTransaction();
-            // Replace the current parent fragment for the child fragment (CreateNewTripFragment)
-            childFragmentTransaction.replace(fragmentMyTripsBinding.myTripsFragmentLayout.getId(), CreateNewTripFragment.getNewInstance());
-            childFragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_anim, R.anim.fragment_slide_out_anim);
-            childFragmentTransaction.setReorderingAllowed(false);
-            childFragmentTransaction.commit();
-            // Once the child fragment (CreateNewTripFragment) has loaded, hide the addNewTripButton
-            addNewTripButton.setVisibility(View.GONE);
-        });
-
         return rootFragmentView;
     }
 
@@ -96,11 +84,29 @@ public class MyTripsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View fragmentView, @Nullable Bundle savedInstanceState) {
 
-        // Ensure that the parent fragment (MyTripsFragment) remains visible on navigation
-        fragmentMyTripsBinding.myTripsFragmentLayout.setVisibility(View.VISIBLE);
+        MaterialButton filterTripButton = fragmentMyTripsBinding.filterTripButton;
 
-        // Make sure that the RecyclerView is visible in this fragment's view
-        fragmentMyTripsBinding.myTripsRecyclerView.setVisibility(View.VISIBLE);
+        FloatingActionButton addNewTripButton = fragmentMyTripsBinding.addNewTripButton;
+
+        SwipeRefreshLayout myTripsRefreshLayout = fragmentMyTripsBinding.myTripsRefreshLayout;
+
+        // Once the filter button is clicked, show the menu that filters the items in the RecyclerView
+        filterTripButton.setOnClickListener(filterRecyclerView -> showFilterMenu(filterRecyclerView, R.menu.filter_popup_menu));
+
+        // Once the button is clicked, the CreateNewTripFragment will launch in the current fragment's parent layout
+        addNewTripButton.setOnClickListener(navigateToFragment -> {
+            FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+//            Fragment parentFragment = getChildFragmentManager().getPrimaryNavigationFragment();
+            Fragment childFragment = CreateNewTripFragment.getNewInstance();
+            // Replace the current parent fragment's layout for the child fragment (CreateNewTripFragment)
+            fragmentTransaction.replace(fragmentMyTripsBinding.rootFragmentLayout.getId(), childFragment);
+            fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+            fragmentTransaction.setReorderingAllowed(true);
+            fragmentTransaction.commit();
+
+            addNewTripButton.setVisibility(View.GONE);
+
+        });
 
         // Get all trips from the database by using the view model
         try {
@@ -122,6 +128,35 @@ public class MyTripsFragment extends Fragment {
 
     }
 
+    @SuppressLint("RestrictedApi")
+    private void showFilterMenu(View filterRecyclerView, @MenuRes int filter_popup_menu) {
+        PopupMenu filterPopup = new PopupMenu(requireActivity(), filterRecyclerView);
+        filterPopup.getMenuInflater().inflate(filter_popup_menu, filterPopup.getMenu());
+        if (filterPopup.getMenu() instanceof MenuBuilder) {
+            MenuBuilder menuBuilder = (MenuBuilder) filterPopup.getMenu();
+            menuBuilder.setOptionalIconsVisible(true);
+            for (MenuItem menuItem : menuBuilder.getVisibleItems()) {
+                float ICON_MARGIN = 16;
+                int iconMarginPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, ICON_MARGIN, getResources().getDisplayMetrics());
+                if (menuItem.getIcon() != null) {
+                    new InsetDrawable(menuItem.getIcon(), iconMarginPx, 0, iconMarginPx, 0);
+                } else {
+                    new InsetDrawable(menuItem.getIcon(), iconMarginPx, 0, iconMarginPx, 0) {
+                        @Override
+                        public int getIntrinsicWidth() {
+                            return getIntrinsicHeight() + iconMarginPx + iconMarginPx;
+                        }
+                    };
+                }
+            }
+        }
+        filterPopup.show();
+        filterPopup.setOnMenuItemClickListener(item -> false);
+        filterPopup.setOnDismissListener(menu -> {
+
+        });
+        filterPopup.show();
+    }
 
     @Override
     public void onDestroyView() {
