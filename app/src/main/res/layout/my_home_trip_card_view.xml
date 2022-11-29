@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/myHomeTripCardView"
     style="?attr/materialCardViewElevatedStyle"
-    android:layout_width="200dp"
-    android:layout_height="wrap_content"
+    android:layout_width="300dp"
+    android:layout_height="500dp"
     android:clickable="true"
     android:focusable="true">
 
@@ -16,21 +17,16 @@
 
         <ImageView
             android:id="@+id/tripMedia"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <CheckBox
-            android:id="@+id/tripFavouriteIcon"
-            style="?attr/materialIconButtonOutlinedStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tripMedia"
-            android:button="@drawable/sl_favourite_24dp"
-            android:contentDescription="@string/favourite_button" />
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:src="@drawable/unsplash_placeholder_medium"
+            android:scaleType="centerCrop"/>
 
         <RelativeLayout
+            android:id="@+id/tripCardTextContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/tripMedia"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -69,6 +65,15 @@
                 android:textAppearance="?attr/textAppearanceSubtitle2" />
 
         </RelativeLayout>
+
+<!--        <CheckBox-->
+<!--            android:id="@+id/tripFavouriteIcon"-->
+<!--            style="?attr/materialIconButtonOutlinedStyle"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignEnd="@id/tripMedia"-->
+<!--            android:button="@drawable/sl_favourite_24dp"-->
+<!--            android:contentDescription="@string/favourite_button" />-->
 
     </RelativeLayout>
 

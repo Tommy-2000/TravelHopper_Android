@@ -28,6 +28,26 @@ public class TripViewModel extends AndroidViewModel {
         return allTripsLiveData;
     }
 
+    public LiveData<List<TripEntity>> getAllTripsByName(String tripName) {
+        return travelHopperRepository.getAllTripsByName(tripName);
+    }
+
+    public LiveData<List<TripEntity>> getAllTripsByLocation(String tripLocation) {
+        return travelHopperRepository.getAllTripsByLocation(tripLocation);
+    }
+
+    public LiveData<List<TripEntity>> getAllTripsAlphabetically() {
+        return travelHopperRepository.getAllTripsAlphabetically();
+    }
+
+    public LiveData<List<TripEntity>> getAllTripsByStartDate(Long tripStartDate) {
+        return travelHopperRepository.getAllTripsByStartDate(tripStartDate);
+    }
+
+    public LiveData<List<TripEntity>> getAllTripsByEndDate(Long tripEndDate) {
+        return travelHopperRepository.getAllTripsByEndDate(tripEndDate);
+    }
+
     public LiveData<List<TripEntity>> getAllFavouriteTrips() {
         return allFavouriteTripsLiveData;
     }
@@ -36,12 +56,20 @@ public class TripViewModel extends AndroidViewModel {
         travelHopperRepository.insertTripEntity(tripEntity);
     }
 
-    public void insertFavouriteTrip(TripEntity tripEntity, boolean isTripFavourite) {
-        travelHopperRepository.insertFavouriteTripEntity(tripEntity, isTripFavourite);
-    }
-
     public void insertAllTrips(List<TripEntity> allTripEntities) {
         travelHopperRepository.insertAllTripEntities(allTripEntities);
+    }
+
+    public void updateTrip(TripEntity tripEntity) {
+        travelHopperRepository.updateTripEntity(tripEntity);
+    }
+
+    public void updateFavouriteTripByID(int tripID, boolean isTripFavourite) {
+        travelHopperRepository.updateFavouriteTripEntityByID(tripID, isTripFavourite);
+    }
+
+    public void updateAllTrips(List<TripEntity> allTripEntities) {
+        travelHopperRepository.updateAllTripEntities(allTripEntities);
     }
 
     public void deleteTrip(TripEntity tripEntity) {

@@ -11,7 +11,7 @@ import androidx.room.TypeConverters;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {TripEntity.class}, version = 1, autoMigrations = {@AutoMigration(from = 1, to = 2)})
+@Database(entities = {TripEntity.class}, version = 1, exportSchema = false)
 @TypeConverters({TripDateConverters.class})
 public abstract class TravelHopperDatabase extends RoomDatabase {
     public abstract TravelHopperDAO travelHopperDAO();
