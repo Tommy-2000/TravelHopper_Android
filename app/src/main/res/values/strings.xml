@@ -60,10 +60,10 @@
     <string name="favourite_button">Favourite Button</string>
     <string name="camera_button">Camera Button</string>
     <string name="add_media">Add Photo or Video</string>
-    <string name="filter_string">Filter</string>
-    <string name="favourites">Favourites</string>
-    <string name="newer">Newer</string>
-    <string name="older">Older</string>
+    <string name="filter_string">Filter by…</string>
+    <string name="ascending_trips">Ascending</string>
+    <string name="descending_trips">Descending</string>
+    <string name="favourite_trips">Favourites</string>
     <string name="add_new_trip">Add New Trip</string>
     <string name="switch_cameras">Switch Cameras</string>
     <string name="add_trip_to_favourites">Add trip to favourites</string>
@@ -71,5 +71,6 @@
     <string name="empty_string" />
     <string name="settings_button">My Settings Button</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nested_scroll_view">Nested Scroll View</string>
 
 </resources>

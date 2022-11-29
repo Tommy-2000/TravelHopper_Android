@@ -31,16 +31,51 @@ public class TravelHopperRepository {
     }
 
     @WorkerThread
+    int getIDFromTripEntity() { return travelHopperDAO.getIDFromTrip(); }
+
+    @WorkerThread
+    String getNameFromTripEntity() { return travelHopperDAO.getNameFromTrip(); }
+
+    @WorkerThread
+    String getLocationFromTripEntity() { return travelHopperDAO.getLocationFromTrip(); }
+
+    @WorkerThread
+    String getMediaPathFromTripEntity() { return travelHopperDAO.getMediaPathFromTrip(); }
+
+    @WorkerThread
+    Long getStartDateFromTripEntity() { return travelHopperDAO.getStartDateFromTrip(); }
+
+    @WorkerThread
+    Long getEndDateFromTripEntity() { return travelHopperDAO.getEndDateFromTrip(); }
+
+    @WorkerThread
+    String getDetailsFromTripEntity() { return travelHopperDAO.getDetailsFromTrip(); }
+
+
+    @WorkerThread
     LiveData<List<TripEntity>> getAllFavouriteTrips() { return favouriteTripEntities; }
+
+    @WorkerThread
+    LiveData<List<TripEntity>> getAllTripsByName(String tripName) { return travelHopperDAO.getAllTripsByName(tripName); }
+
+    @WorkerThread
+    LiveData<List<TripEntity>> getAllTripsAlphabetically() { return travelHopperDAO.getAllTripsAlphabetically(); }
+
+    @WorkerThread
+    LiveData<List<TripEntity>> getAllTripsReverseAlphabetically() { return travelHopperDAO.getAllTripsReverseAlphabetically(); }
+
+    @WorkerThread
+    LiveData<List<TripEntity>> getAllTripsByLocation(String tripLocation) { return travelHopperDAO.getAllTripsByLocation(tripLocation); }
+
+    @WorkerThread
+    LiveData<List<TripEntity>> getAllTripsByStartDate(Long tripStartDate) { return travelHopperDAO.getAllTripsByStartDate(tripStartDate); }
+
+    @WorkerThread
+    LiveData<List<TripEntity>> getAllTripsByEndDate(Long tripEndDate) { return travelHopperDAO.getAllTripsByEndDate(tripEndDate); }
 
     @WorkerThread
     void insertTripEntity(TripEntity tripEntity) {
         TravelHopperDatabase.databaseWriteExecutor.execute(() -> travelHopperDAO.insertTripEntity(tripEntity));
-    }
-
-    @WorkerThread
-    void insertFavouriteTripEntity(TripEntity tripEntity, boolean isTripFavourite) {
-        TravelHopperDatabase.databaseWriteExecutor.execute(() -> travelHopperDAO.insertFavouriteTripEntity(tripEntity, isTripFavourite));
     }
 
     @WorkerThread
@@ -54,8 +89,8 @@ public class TravelHopperRepository {
     }
 
     @WorkerThread
-    void updateFavouriteTripEntityByID(TripEntity tripEntity, boolean isTripFavourite, int tripID) {
-        TravelHopperDatabase.databaseWriteExecutor.execute(() -> travelHopperDAO.updateFavouriteTripEntityByID(tripEntity, isTripFavourite, tripID));
+    void updateFavouriteTripEntityByID(int tripID, boolean isTripFavourite) {
+        TravelHopperDatabase.databaseWriteExecutor.execute(() -> travelHopperDAO.updateFavouriteTripEntityByID(tripID, isTripFavourite));
     }
 
     @WorkerThread

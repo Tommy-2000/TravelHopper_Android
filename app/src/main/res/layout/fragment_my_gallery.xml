@@ -2,64 +2,71 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/myGalleryFragmentLayout"
+    android:id="@+id/rootFragmentLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MyGalleryFragment">
 
-    <RelativeLayout
-        android:id="@+id/fragmentContentLayout"
+    <FrameLayout
+        android:id="@+id/myGalleryFragmentLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="15dp">
-
-        <TextView
-            android:id="@+id/myGalleryFragmentTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/TextAppearance.Material3.DisplayMedium"
-            android:text="@string/my_gallery_title" />
+        android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/filterButtonGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/myGalleryFragmentTitle"
-            android:orientation="horizontal"
-            android:padding="16dp">
+            android:id="@+id/fragmentRelativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <Button
-                android:id="@+id/galleryFilterButton"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/myGalleryFragmentTitle"
+                style="@style/TextAppearance.Material3.DisplayMedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/my_gallery_title" />
+
+            <RelativeLayout
+                android:id="@+id/filterButtonGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/filter_string"
-                tools:ignore="TextContrastCheck" />
+                android:layout_below="@id/myGalleryFragmentTitle"
+                android:orientation="horizontal"
+                android:padding="16dp">
 
-        </RelativeLayout>
+                <Button
+                    android:id="@+id/galleryFilterButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_string"
+                    tools:ignore="TextContrastCheck" />
+
+            </RelativeLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/myGalleryRecyclerView"
                 android:name="uk.ac.tees.b1662096.travelhopper_travelapp.GalleryFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="650dp"
                 android:layout_below="@id/filterButtonGroup"
                 app:layoutManager="LinearLayoutManager"
                 tools:context=".MyGalleryFragment"
-                tools:listitem="@layout/media_card_view"/>
+                tools:listitem="@layout/media_card_view" />
 
 
-    </RelativeLayout>
+        </RelativeLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addMediaButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="100dp"
-        android:contentDescription="@string/add_media"
-        android:elevation="10dp"
-        android:fitsSystemWindows="true"
-        android:src="@drawable/ic_add_media_icon" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addMediaButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="100dp"
+            android:contentDescription="@string/add_media"
+            android:elevation="10dp"
+            android:fitsSystemWindows="true"
+            android:src="@drawable/ic_add_media_icon" />
+
+    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

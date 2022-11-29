@@ -9,22 +9,54 @@
         android:id="@+id/myHomeFragment"
         android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyHomeFragment"
         android:label="My Home"
-        tools:layout="@layout/fragment_my_home"/>
+        tools:layout="@layout/fragment_my_home">
+        <action
+            android:id="@+id/action_myHomeFragment_to_myTripsFragment"
+            app:destination="@id/myTripsFragment"
+            app:enterAnim="@anim/fragment_slide_from_left_anim"
+            app:exitAnim="@anim/fragment_slide_to_right_anim"
+            app:popEnterAnim="@anim/fragment_slide_from_right_anim"
+            app:popExitAnim="@anim/fragment_slide_to_left_anim" />
+    </fragment>
     <fragment
         android:id="@+id/myTripsFragment"
         android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyTripsFragment"
         android:label="My Trips"
-        tools:layout="@layout/fragment_my_trips" />
+        tools:layout="@layout/fragment_my_trips" >
+        <action
+            android:id="@+id/action_myTripsFragment_to_myGalleryFragment"
+            app:destination="@id/myGalleryFragment"
+            app:enterAnim="@anim/fragment_slide_from_left_anim"
+            app:exitAnim="@anim/fragment_slide_to_right_anim"
+            app:popEnterAnim="@anim/fragment_slide_from_right_anim"
+            app:popExitAnim="@anim/fragment_slide_to_left_anim" />
+    </fragment>
     <fragment
         android:id="@+id/myGalleryFragment"
         android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyGalleryFragment"
         android:label="My Gallery"
-        tools:layout="@layout/fragment_my_gallery" />
+        tools:layout="@layout/fragment_my_gallery" >
+        <action
+            android:id="@+id/action_myGalleryFragment_to_myMapFragment"
+            app:destination="@id/myMapFragment"
+            app:enterAnim="@anim/fragment_slide_from_left_anim"
+            app:exitAnim="@anim/fragment_slide_to_right_anim"
+            app:popEnterAnim="@anim/fragment_slide_from_right_anim"
+            app:popExitAnim="@anim/fragment_slide_to_left_anim" />
+    </fragment>
     <fragment
         android:id="@+id/myMapFragment"
         android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MyMapFragment"
         android:label="My Maps"
-        tools:layout="@layout/fragment_my_map" />
+        tools:layout="@layout/fragment_my_map" >
+        <action
+            android:id="@+id/action_myMapFragment_to_myHomeFragment"
+            app:destination="@id/myHomeFragment"
+            app:enterAnim="@anim/fragment_slide_from_left_anim"
+            app:exitAnim="@anim/fragment_slide_to_right_anim"
+            app:popEnterAnim="@anim/fragment_slide_from_right_anim"
+            app:popExitAnim="@anim/fragment_slide_to_left_anim" />
+    </fragment>
     <fragment
         android:id="@+id/mySettingsFragment"
         android:name="uk.ac.tees.b1662096.travelhopper_travelapp.MySettingsFragment"
