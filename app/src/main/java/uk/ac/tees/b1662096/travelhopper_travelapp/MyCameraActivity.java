@@ -1,5 +1,6 @@
 package uk.ac.tees.b1662096.travelhopper_travelapp;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.*;
@@ -13,21 +14,26 @@ import androidx.camera.video.QualitySelector;
 import androidx.camera.video.Recorder;
 import androidx.camera.video.VideoRecordEvent;
 import androidx.camera.view.PreviewView;
+import androidx.camera.view.TransformUtils;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Camera;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Size;
+import android.view.OrientationEventListener;
+import android.view.Surface;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -40,6 +46,8 @@ import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import java.lang.Math;
 
 import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.ActivityMyCameraBinding;
 
@@ -60,7 +68,13 @@ public class MyCameraActivity extends AppCompatActivity {
 
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
 
+    private ProcessCameraProvider cameraProvider;
+
     private ExecutorService cameraExecutor;
+
+    private int[] facingLens;
+
+    private Preview preview;
 
     private PreviewView previewView;
 
@@ -74,7 +88,7 @@ public class MyCameraActivity extends AppCompatActivity {
 
     private boolean curRecording = false;
 
-    private FloatingActionButton imageCaptureButton, videoCaptureButton, navigateBackButton;
+    private FloatingActionButton imageCaptureButton, videoCaptureButton, navigateBackButton, switchCameraButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,20 +101,20 @@ public class MyCameraActivity extends AppCompatActivity {
         // Check if device has an available camera
         if (cameraIsAvailable()) {
             Log.i("VIDEO_RECORD_TAG", "Camera is detected");
-        // Set up the CameraProvider and check for permissions granted
-        cameraProviderFuture = ProcessCameraProvider.getInstance(this);
-        cameraProviderFuture.addListener(() -> {
-            try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                if (cameraPermissionGranted()) {
-                    startCamera(cameraProvider);
-                } else {
-                    requestMyCameraPermissions();
+            // Set up the CameraProvider and check for permissions granted
+            cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+            cameraProviderFuture.addListener(() -> {
+                try {
+                    cameraProvider = cameraProviderFuture.get();
+                    if (cameraPermissionGranted()) {
+                        startCamera(cameraProvider);
+                    } else {
+                        requestMyCameraPermissions();
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.e("ExecutionException/InterruptedException", "CameraX Binding Failed", e);
                 }
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e("ExecutionException/InterruptedException", "CameraX Binding Failed", e);
-            }
-        }, ContextCompat.getMainExecutor(this));
+            }, ContextCompat.getMainExecutor(this));
 
         } else {
             Log.i("VIDEO_RECORD_TAG", "Error - Unable to detect camera");
@@ -132,10 +146,19 @@ public class MyCameraActivity extends AppCompatActivity {
             }
         });
 
-//        switchCameraButton = myCameraActivityBinding.switchCameraButton;
-//        switchCameraButton.setOnClickListener(view -> {
-//
-//        });
+        facingLens = new int[]{CameraSelector.LENS_FACING_BACK};
+        switchCameraButton = myCameraActivityBinding.switchCameraButton;
+
+        switchCameraButton.setOnClickListener(view -> {
+            if (facingLens[0] == CameraSelector.LENS_FACING_BACK) {
+                // Switch to the front camera if the back camera is currently selected
+                facingLens[0] = CameraSelector.LENS_FACING_FRONT;
+            } else if (facingLens[0] == CameraSelector.LENS_FACING_FRONT) {
+                // Switch to the back camera if the front camera is currently selected
+                facingLens[0] = CameraSelector.LENS_FACING_BACK;
+            }
+            startCamera(cameraProvider);
+        });
 
         // Set up the back Button
         navigateBackButton = myCameraActivityBinding.navigateBackButton;
@@ -179,6 +202,7 @@ public class MyCameraActivity extends AppCompatActivity {
 
         // Set up the ImageCapture use case
         imageCapture = new ImageCapture.Builder()
+                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
                 .build();
 
@@ -192,18 +216,44 @@ public class MyCameraActivity extends AppCompatActivity {
 
         // Set up the CameraSelector use case
         CameraSelector cameraSelector = new CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                .requireLensFacing(facingLens[0])
                 .build();
 
         // Set up the Preview use case
-        Preview preview = new Preview.Builder().setTargetAspectRatio(AspectRatio.RATIO_4_3)
+        preview = new Preview.Builder()
+                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                 .build();
+
+        // Create an orientation listener that rotates the SurfaceView of the PreviewView based on the display's orientation
+        OrientationEventListener cameraOrientationListener = new OrientationEventListener(this) {
+            @Override
+            public void onOrientationChanged(int cameraOrientation) {
+                int cameraRotation;
+
+                if (cameraOrientation >= 45 && cameraOrientation < 135) {
+                    cameraRotation = Surface.ROTATION_270;
+                } else if (cameraOrientation >= 135 && cameraOrientation < 225) {
+                    cameraRotation = Surface.ROTATION_180;
+                } else if (cameraOrientation >= 225 && cameraOrientation < 315) {
+                    cameraRotation = Surface.ROTATION_90;
+                } else {
+                    cameraRotation = Surface.ROTATION_0;
+                }
+                imageCapture.setTargetRotation(cameraRotation);
+            }
+        };
+
+        cameraOrientationListener.enable();
 
         // Set up the implementation mode for the PreviewView
         previewView.setImplementationMode(PreviewView.ImplementationMode.PERFORMANCE);
 
         // Set up the scaleType for the PreviewView
-        previewView.setScaleType(PreviewView.ScaleType.FILL_CENTER);
+        previewView.setScaleType(PreviewView.ScaleType.FIT_CENTER);
+
+        // Set up the X and Y scales for the PreviewView
+        previewView.setScaleX(1f);
+        previewView.setScaleY(1f);
 
         // Set up the previewView SurfaceProvider
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
@@ -249,12 +299,12 @@ public class MyCameraActivity extends AppCompatActivity {
                         @Override
                         public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                             Snackbar.make(rootView, "Photo has been saved successfully", Snackbar.LENGTH_SHORT).show();
-                            // Pass the image to the MyTripsFragment using an Intent
-                            Uri photoUri = outputFileResults.getSavedUri();
-                            assert photoUri != null;
-                            Intent passImageToNewTrip = new Intent(MyCameraActivity.this, MyTripsFragment.class);
-                            passImageToNewTrip.putExtra("CAPTURED_PHOTO", photoUri);
-                            startActivity(passImageToNewTrip);
+//                            // Pass the image to the MyTripsFragment using an Intent
+//                            Uri photoUri = outputFileResults.getSavedUri();
+//                            assert photoUri != null;
+//                            Intent passImageToNewTrip = new Intent(MyCameraActivity.this, MyTripsFragment.class);
+//                            passImageToNewTrip.putExtra("CAPTURED_PHOTO", photoUri);
+//                            startActivity(passImageToNewTrip);
                         }
 
                         // If the photo has not successfully saved, return an error message/Snackbar
@@ -269,6 +319,7 @@ public class MyCameraActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void captureVideoRecording() {
 
         // Check if the videoCapture object is not pointing to null
