@@ -17,7 +17,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.util.TypedValue;
@@ -25,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -38,6 +38,10 @@ public class MyTripsFragment extends Fragment {
     private FragmentMyTripsBinding fragmentMyTripsBinding;
 
     private TripViewModel tripViewModel;
+
+    private RecyclerView myTripsRecyclerView;
+
+    private MyTripsRecyclerViewAdapter myTripsRecyclerViewAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -84,40 +88,28 @@ public class MyTripsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View fragmentView, @Nullable Bundle savedInstanceState) {
 
+        FrameLayout myTripsFragmentLayout = fragmentMyTripsBinding.myTripsFragmentLayout;
+
         MaterialButton filterTripButton = fragmentMyTripsBinding.filterTripButton;
 
         FloatingActionButton addNewTripButton = fragmentMyTripsBinding.addNewTripButton;
-
-        SwipeRefreshLayout myTripsRefreshLayout = fragmentMyTripsBinding.myTripsRefreshLayout;
 
         // Once the filter button is clicked, show the menu that filters the items in the RecyclerView
         filterTripButton.setOnClickListener(filterRecyclerView -> showFilterMenu(filterRecyclerView, R.menu.filter_popup_menu));
 
         // Once the button is clicked, the CreateNewTripFragment will launch in the current fragment's parent layout
-        addNewTripButton.setOnClickListener(navigateToFragment -> {
-            FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-//            Fragment parentFragment = getChildFragmentManager().getPrimaryNavigationFragment();
-            Fragment childFragment = CreateNewTripFragment.getNewInstance();
-            // Replace the current parent fragment's layout for the child fragment (CreateNewTripFragment)
-            fragmentTransaction.replace(fragmentMyTripsBinding.rootFragmentLayout.getId(), childFragment);
-            fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-            fragmentTransaction.setReorderingAllowed(true);
-            fragmentTransaction.commit();
-
-            addNewTripButton.setVisibility(View.GONE);
-
-        });
+        addNewTripButton.setOnClickListener(navigateToFragment -> navigateToChildFragment());
 
         // Get all trips from the database by using the view model
         try {
             tripViewModel = new ViewModelProvider(this).get(TripViewModel.class);
             tripViewModel.getAllTrips().observe(getViewLifecycleOwner(), tripEntityList -> {
                 // Set up the LayoutManager for the RecyclerView
-                RecyclerView myTripsRecyclerView = fragmentMyTripsBinding.myTripsRecyclerView;
+                myTripsRecyclerView = fragmentMyTripsBinding.myTripsRecyclerView;
                 myTripsRecyclerView.setLayoutManager(new LinearLayoutManager(myTripsRecyclerView.getContext()));
                 myTripsRecyclerView.setItemAnimator(new DefaultItemAnimator());
                 // Set up the adapter for the RecyclerView
-                MyTripsRecyclerViewAdapter myTripsRecyclerViewAdapter = new MyTripsRecyclerViewAdapter(new MyTripsRecyclerViewAdapter.TripEntityDiff());
+                myTripsRecyclerViewAdapter = new MyTripsRecyclerViewAdapter(new MyTripsRecyclerViewAdapter.TripEntityDiff());
                 myTripsRecyclerView.setAdapter(myTripsRecyclerViewAdapter);
                 // Update the list in the adapter based on the viewModel
                 myTripsRecyclerViewAdapter.submitList(tripEntityList);
@@ -126,6 +118,27 @@ public class MyTripsFragment extends Fragment {
             Log.e("View Model Observer Exception", e.getLocalizedMessage());
         }
 
+    }
+
+    private void navigateToChildFragment() {
+        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+        // Get the current fragment (MyTripsFragment) called currentFragment by its tag
+        MyTripsFragment currentFragment = (MyTripsFragment) getParentFragmentManager().findFragmentByTag("MY_TRIPS_FRAGMENT");
+        // Create an instance of the child fragment (CreateNewTripFragment) and call it childFragment
+        CreateNewTripFragment childFragment = CreateNewTripFragment.getNewInstance();
+        // Replace the current parent fragment's layout for the child fragment (CreateNewTripFragment)
+        fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_from_left_anim, R.anim.fragment_slide_to_right_anim);
+        if (childFragment != null){
+            fragmentTransaction.replace(fragmentMyTripsBinding.rootFragmentLayout.getId(), childFragment);
+        }
+        fragmentTransaction.setReorderingAllowed(true);
+        fragmentTransaction.commit();
+        // Make sure that the current fragment disappears when navigating to the child fragment
+        if (currentFragment != null && currentFragment.isVisible()){
+            fragmentMyTripsBinding.myTripsFragmentLayout.setVisibility(View.VISIBLE);
+        } else {
+            fragmentMyTripsBinding.myTripsFragmentLayout.setVisibility(View.GONE);
+        }
     }
 
     @SuppressLint("RestrictedApi")
@@ -150,8 +163,9 @@ public class MyTripsFragment extends Fragment {
                 }
             }
         }
-        filterPopup.show();
-        filterPopup.setOnMenuItemClickListener(item -> false);
+        filterPopup.setOnMenuItemClickListener(item -> {
+            return false;
+        });
         filterPopup.setOnDismissListener(menu -> {
 
         });

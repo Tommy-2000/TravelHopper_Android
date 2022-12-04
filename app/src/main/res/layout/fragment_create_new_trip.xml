@@ -2,20 +2,17 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rootFragmentLayout"
+    android:id="@+id/createNewTripFragmentLayout"
+    android:tag="CREATE_NEW_TRIP_FRAGMENT"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:windowSoftInputMode="adjustPan"
+    android:fitsSystemWindows="true"
     tools:context=".CreateNewTripFragment">
-
-    <FrameLayout
-        android:id="@+id/createNewTripFragmentLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:windowSoftInputMode="adjustResize">
 
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/top_bar_layout"
+            android:id="@+id/top_app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true">
@@ -51,6 +48,7 @@
                     android:background="@android:color/transparent"
                     android:elevation="0dp"
                     app:layout_collapseMode="pin"
+                    app:popupTheme="@style/Widget.Material3.Toolbar"
                     app:title="@string/create_new_trip_title" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -58,8 +56,9 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/contentNestedScrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="20dp">
 
             <RelativeLayout
@@ -67,7 +66,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:layout_marginTop="150dp"
+                android:padding="5dp"
+                android:fillViewport="true">
 
                 <com.google.android.material.divider.MaterialDivider
                     android:id="@+id/content_divider"
@@ -76,7 +77,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
                     app:dividerColor="@color/azure_blue"
-                    app:dividerThickness="5dp" />
+                    app:dividerThickness="3dp" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/input_trip_name"
@@ -188,7 +189,7 @@
             android:checkable="true"
             android:contentDescription="@string/add_trip_to_favourites"
             app:icon="@drawable/ic_favourite_outlined_icon"
-            app:layout_anchor="@id/top_bar_layout"
+            app:layout_anchor="@id/top_app_bar_layout"
             app:layout_anchorGravity="bottom|end" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -201,5 +202,5 @@
             android:elevation="10dp"
             android:fitsSystemWindows="true"
             android:src="@drawable/ic_add_icon" />
-    </FrameLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

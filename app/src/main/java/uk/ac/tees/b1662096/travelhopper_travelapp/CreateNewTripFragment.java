@@ -32,7 +32,6 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.IOException;
 import java.net.URLConnection;
@@ -57,8 +56,6 @@ public class CreateNewTripFragment extends Fragment {
     private TripViewModel tripViewModel;
 
     private static final int READ_EXTERNAL_STORAGE_CODE = 101;
-
-    private boolean isKeyboardVisible = false;
 
     private MaterialToolbar fragmentToolbar;
 
@@ -102,27 +99,6 @@ public class CreateNewTripFragment extends Fragment {
         // Inflate the layout for this fragment
         fragmentCreateNewTripBinding = FragmentCreateNewTripBinding.inflate(fragmentInflater, container, false);
         rootFragmentView = fragmentCreateNewTripBinding.getRoot();
-
-//        // Check if the keyboard appears when any text fields are clicked, then have the root layout fixed
-//        rootFragmentView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-//            Rect windowFrame = new Rect();
-//            rootFragmentView.getWindowVisibleDisplayFrame(windowFrame);
-//            int screenHeight = rootFragmentView.getRootView().getHeight();
-//
-//            int keyboardHeight = screenHeight - windowFrame.bottom;
-//            if (keyboardHeight > screenHeight * 0.15) {
-//                // If the user's keyboard is open, set the content view to be scrollable
-//                if (!isKeyboardVisible) {
-//                    isKeyboardVisible = true;
-//                }
-//            } else {
-//                // If the user's keyboard is closed, set the content view to be static
-//                if (isKeyboardVisible) {
-//                    isKeyboardVisible = false;
-//                }
-//            }
-//        });
-
         return rootFragmentView;
     }
 
@@ -131,11 +107,10 @@ public class CreateNewTripFragment extends Fragment {
     public void onViewCreated(@NonNull View rootFragmentView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(rootFragmentView, savedInstanceState);
 
-
         // Set the navigation back button in the toolbar to navigate to the previous fragment on the MainActivity
         fragmentToolbar = fragmentCreateNewTripBinding.childFragmentToolbar;
         fragmentToolbar.setNavigationIcon(R.drawable.ic_arrow_back_icon);
-        fragmentToolbar.setNavigationOnClickListener(navigateFragmentView -> navigateBack(fragmentToolbar));
+        fragmentToolbar.setNavigationOnClickListener(navigateFragmentView -> navigateToParentFragment());
 
         // Get the ViewModel based on the requirements of the parent fragment (MyTripsFragment)
         tripViewModel = new ViewModelProvider(requireParentFragment()).get(TripViewModel.class);
@@ -204,12 +179,12 @@ public class CreateNewTripFragment extends Fragment {
 
     private void addNewTrip(TextInputEditText editTripName, TextInputEditText editTripLocation, Long tripStartDate, Long tripEndDate, TextInputEditText editTripDetails, boolean tripIsFavourite) {
         tripViewModel.insertTrip(new TripEntity(0, editTripName.toString(), editTripLocation.toString(), String.valueOf(mediaBitmap.getHeight()), tripStartDate, tripEndDate, editTripDetails.toString(), tripIsFavourite));
-        if (tripIsFavourite == true){
+        if (tripIsFavourite){
             Snackbar.make(rootFragmentView, "New favourite trip has been added", Snackbar.LENGTH_SHORT).show();
         } else {
             Snackbar.make(rootFragmentView, "New trip has been added", Snackbar.LENGTH_SHORT).show();
         }
-        navigateBack(fragmentToolbar);
+        navigateToParentFragment();
     }
 
 
@@ -221,9 +196,9 @@ public class CreateNewTripFragment extends Fragment {
             Intent getMediaFromGallery = new Intent(Intent.ACTION_GET_CONTENT);
             getMediaFromGallery.setType("media/*");
             // Check if the media from the mime type is an image or video
-            if (getMediaFromGallery.getType() == "image/*") {
+            if (getMediaFromGallery.getType().equals("image/*")) {
                 isMediaImage(getMediaFromGallery.getData().getPath());
-            } else if (getMediaFromGallery.getType() == "video/*") {
+            } else if (getMediaFromGallery.getType().equals("video/*")) {
                 isMediaVideo(getMediaFromGallery.getData().getPath());
             }
             final PackageManager packageManager = requireActivity().getPackageManager();
@@ -280,18 +255,28 @@ public class CreateNewTripFragment extends Fragment {
             });
 
 
-    private void navigateBack(MaterialToolbar fragmentToolbar) {
-        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-        // Replace the current fragment for the previous fragment (MyTripsFragment)
-        Fragment parentFragment = MyTripsFragment.getNewInstance();
-        fragmentTransaction.replace(fragmentCreateNewTripBinding.rootFragmentLayout.getId(), parentFragment);
-        fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_from_left_anim, R.anim.fragment_slide_to_right_anim);
+    private void navigateToParentFragment() {
+        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+        // Get the current fragment (CreateNewTripFragment) called currentFragment by its tag
+        CreateNewTripFragment currentFragment = (CreateNewTripFragment) getChildFragmentManager().findFragmentByTag("CREATE_NEW_TRIP_FRAGMENT");
+        // Get the previous fragment (MyTripsFragment) called parentFragment by its tag
+        MyTripsFragment parentFragment = (MyTripsFragment) getParentFragmentManager().findFragmentByTag("MY_TRIPS_FRAGMENT");
+        // Set transition animations when the fragments are being switched
+        fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_from_right_anim, R.anim.fragment_slide_to_left_anim);
+        // Replace the current child fragment with the parent fragment (MyTripsFragment)
+        if (parentFragment != null) {
+            fragmentTransaction.replace(fragmentCreateNewTripBinding.createNewTripFragmentLayout.getId(), parentFragment);
+        }
         // Ensure that this fragment is not added to the backstack
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.setReorderingAllowed(true);
         fragmentTransaction.commit();
-        // Make sure that the FrameLayout for the child fragment disappears when navigating back to the parent fragment
-        fragmentCreateNewTripBinding.createNewTripFragmentLayout.setVisibility(View.GONE);
+        // Make sure that the child fragment disappears when navigating back to the parent fragment
+        if (currentFragment != null && currentFragment.isVisible()) {
+            fragmentCreateNewTripBinding.createNewTripFragmentLayout.setVisibility(View.VISIBLE);
+        } else {
+            fragmentCreateNewTripBinding.createNewTripFragmentLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
