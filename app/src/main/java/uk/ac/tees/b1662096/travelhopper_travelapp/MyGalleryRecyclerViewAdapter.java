@@ -58,9 +58,9 @@ public class MyGalleryRecyclerViewAdapter extends RecyclerView.Adapter<MyGallery
     @Override
     public void onBindViewHolder(final MyGalleryViewHolder myGalleryViewHolder, int position) {
         // Try this in case Glide doesn't work
-//        myGalleryViewHolder.mediaImageView.setImageURI(galleryMediaList.get(position));
-        // Use Glide with the requestOptions to load the image into the viewHolder
-        Glide.with(myGalleryViewHolder.mediaImageView.getContext()).load(galleryMediaList.get(position)).skipMemoryCache(true).apply(RequestOptions.circleCropTransform()).into(bindingMediaCardView.mediaImageView);
+        myGalleryViewHolder.mediaImageView.setImageBitmap(galleryMediaList.get(position));
+//        // Use Glide with the requestOptions to load the image into the viewHolder
+//        Glide.with(myGalleryViewHolder.mediaImageView.getContext()).load(galleryMediaList.get(position)).skipMemoryCache(true).apply(RequestOptions.circleCropTransform()).into(bindingMediaCardView.mediaImageView);
 
         // Check that the item in the ViewHolder is clickable
         myGalleryViewHolder.mediaImageView.setOnClickListener(view -> Snackbar.make(myGalleryViewHolder.mediaImageView.getRootView(), "Trip Item has been clicked", Snackbar.LENGTH_SHORT).show());
