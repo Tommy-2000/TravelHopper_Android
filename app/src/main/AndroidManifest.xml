@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <!-- Android Features -->
     <uses-feature android:name="android.hardware.wifi" />
-    <uses-feature android:name="android.hardware.camera.any" />
-    <!-- Android Permissions -->
+    <uses-feature android:name="android.hardware.camera.any" /> <!-- Android Permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
@@ -22,6 +21,8 @@
 
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -35,24 +36,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TravelHopperTravelApp"
         tools:targetApi="31">
-
+        <activity
+            android:name=".ui.splash.SplashActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <!-- Get API Key for Google Maps SDK -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="MAPS_API_KEY" />
-
+            android:value="${MAPS_API_KEY}" /> <!-- SignIn Activity is called before the Main Activity on the app's first installation -->
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".ui.firebaseAuth.SignInActivity"
+            android:exported="true"
+            android:label="@string/login_activity_title">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
+        </activity> <!-- The Main Activity contains the main pages/Fragments essential for navigation -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
-        </activity>
+        </activity> <!-- The My Camera Activity contains the necessary camera and video functionality to take pictures and videos -->
         <activity
             android:name=".MyCameraActivity"
             android:exported="false">

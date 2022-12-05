@@ -2,10 +2,12 @@ package uk.ac.tees.b1662096.travelhopper_travelapp;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,6 +54,15 @@ public class MyHomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Manage navigation callback when back button is pressed
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Ensure that the parent fragment (MyHomeFragment) loads into the NavHostFragment while using the bottom navigation menu
+                NavHostFragment.findNavController(MyHomeFragment.this).navigateUp();
+            }
+        };
+        requireParentFragment().requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
 
     }
 
@@ -62,18 +73,14 @@ public class MyHomeFragment extends Fragment {
         fragmentMyHomeBinding = FragmentMyHomeBinding.inflate(fragmentInflater, container, false);
         View rootFragmentView = fragmentMyHomeBinding.getRoot();
 
-        tripViewModel = new ViewModelProvider(this).get(TripViewModel.class);
-
-        tripViewModel.getAllTripsAlphabetically().observe(getViewLifecycleOwner(), tripEntityList -> {
-            RecyclerView myHomeCardCarousel = fragmentMyHomeBinding.myHomeCardCarousel;
-            myHomeCardCarousel.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-            MyTripsRecyclerViewAdapter myTripsRecyclerViewAdapter = new MyTripsRecyclerViewAdapter(new MyTripsRecyclerViewAdapter.TripEntityDiff());
-            myHomeCardCarousel.setAdapter(myTripsRecyclerViewAdapter);
-            // Set a decorator for the RecyclerView
-            int tripCardWidthPixels = (int) (requireActivity().getResources().getDisplayMetrics().widthPixels * 0.80f);
-            float tripCardHintPercent = 0.01f;
-            myHomeCardCarousel.addItemDecoration(new MyHomeRecyclerViewDecorator(requireContext(), tripCardWidthPixels, 0.01f));
-        });
+        RecyclerView myHomeCardCarousel = fragmentMyHomeBinding.myHomeCardCarousel;
+        myHomeCardCarousel.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+//        MyHomeRecyclerViewAdapter myHomeRecyclerViewAdapter = new MyHomeRecyclerViewAdapter();
+//        myHomeCardCarousel.setAdapter(myHomeRecyclerViewAdapter);
+        // Set a decorator for the RecyclerView
+        int tripCardWidthPixels = (int) (requireActivity().getResources().getDisplayMetrics().widthPixels * 0.80f);
+        float tripCardHintPercent = 0.01f;
+        myHomeCardCarousel.addItemDecoration(new MyHomeRecyclerViewDecorator(requireContext(), tripCardWidthPixels, 0.01f));
 
         return rootFragmentView;
     }

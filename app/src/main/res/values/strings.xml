@@ -90,5 +90,6 @@
     <string name="google_account_given_name">Google Account Given Name</string>
     <string name="google_account_id">Google Account ID</string>
     <string name="google_account_display_name">Google Account Display Name</string>
+    <string name="remove_google_account_from_app">Remove Google Account</string>
 
 </resources>
