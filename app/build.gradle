@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     namespace 'uk.ac.tees.b1662096.travelhopper_travelapp'
@@ -37,6 +38,10 @@ android {
         dataBinding true
     }
     buildToolsVersion '33.0.0'
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
@@ -52,6 +57,9 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'androidx.annotation:annotation:1.5.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
 
     // Android Navigation Libraries
     def nav_version = "2.5.3"
@@ -78,6 +86,17 @@ dependencies {
     def room_version = "2.4.3"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    // Google Firebase Libraries
+    implementation platform('com.google.firebase:firebase-bom:31.1.0')
+    // Google Firebase Auth Libraries
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.android.gms:play-services-auth:20.4.0'
+    implementation 'com.google.api-client:google-api-client:2.1.1'
+    // Google Firebase Cloud Firestore Library
+    implementation 'com.google.firebase:firebase-firestore'
+    // Google Firebase Cloud Storage Library
+    implementation 'com.google.firebase:firebase-storage'
 
     // Google Maps SDK Libraries
     implementation 'com.google.android.libraries.places:places:2.7.0'

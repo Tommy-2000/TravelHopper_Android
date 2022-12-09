@@ -4,13 +4,18 @@ package uk.ac.tees.b1662096.travelhopper_travelapp;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -18,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -78,6 +84,15 @@ public class MyGalleryFragment extends Fragment {
         if (getArguments() != null) {
             gridColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+        // Manage navigation callback when back button is pressed
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Ensure that the parent fragment (MyGalleryFragment) loads into the NavHostFragment while using the bottom navigation menu
+                NavHostFragment.findNavController(MyGalleryFragment.this).navigateUp();
+            }
+        };
+        requireParentFragment().requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
 
     }
 
@@ -110,6 +125,8 @@ public class MyGalleryFragment extends Fragment {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_CODE);
         } else {
             Intent getMediaFromGallery = new Intent(Intent.ACTION_GET_CONTENT);
+            // Allow for multiple images and video thumbnails to be picked
+            getMediaFromGallery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             getMediaFromGallery.setType("media/*");
             // Check if the media from the mime type is an image or video
             if (getMediaFromGallery.getType().equals("image/*")) {
@@ -124,7 +141,7 @@ public class MyGalleryFragment extends Fragment {
         }
     }
 
-    // Check if the media picked from the user is an image
+    // Check if the media picked from the user is an image based on its path
     private static boolean isMediaImage(String uriMediaPath) {
         String imageMimeType = URLConnection.guessContentTypeFromName(uriMediaPath);
         return imageMimeType != null && imageMimeType.startsWith("image");
@@ -146,25 +163,61 @@ public class MyGalleryFragment extends Fragment {
                     // Get the data as an intent to pass
                     Intent retrievedMediaData = activityResult.getData();
                     assert retrievedMediaData != null;
-                    // Check if intent's data is not null
-                    if (retrievedMediaData.getData() != null) {
-                        // Check if the media in the intent is an image
-                        if (isMediaImage(retrievedMediaData.getData().getPath())) {
-                            Uri imageUriData = retrievedMediaData.getData();
-                            try {
-                                // Convert the Uri from the intent into a Bitmap, then add the bitmap to the arrayList
-                                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.requireContext().getContentResolver(), imageUriData);
-                                mediaArrayList.add(imageBitmap);
+                    // Check that the Intent's Extra allows for multiple images to be picked
+                    if (retrievedMediaData.getStringExtra(Intent.EXTRA_ALLOW_MULTIPLE).equals(Intent.EXTRA_ALLOW_MULTIPLE)) {
+                        String[] mediaPathColumn = {MediaStore.Images.Media.DATA};
+                        // Check if intent's data is not null
+                        if (retrievedMediaData.getData() != null) {
+                            Uri mediaUriData = retrievedMediaData.getData();
+                            // Check if the media in the intent is an image
+                            if (isMediaImage(mediaUriData.getPath())) {
+                                Cursor mediaCursor = requireActivity().getContentResolver().query(mediaUriData, mediaPathColumn, null, null, null);
+                                // Make sure that the cursor object is not null
+                                assert mediaCursor != null;
+                                mediaCursor.moveToFirst();
+                                try {
+                                    // Convert the Uri from the intent into a Bitmap, then add the bitmap to the arrayList
+                                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                                        ImageDecoder.Source imageBitmapSource = ImageDecoder.createSource(this.requireActivity().getContentResolver(), mediaUriData);
+                                        Bitmap imageDataBitmap = ImageDecoder.decodeBitmap(imageBitmapSource);
+                                        mediaArrayList.add(imageDataBitmap);
+                                        myGalleryRecyclerViewAdapter.notifyDataSetChanged();
+                                    } else {
+                                        Bitmap imageDataBitmap = MediaStore.Images.Media.getBitmap(this.requireActivity().getContentResolver(), mediaUriData);
+                                        mediaArrayList.add(imageDataBitmap);
+                                        myGalleryRecyclerViewAdapter.notifyDataSetChanged();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                // Check if the media in the intent is a video
+                            } else if (isMediaVideo(retrievedMediaData.getData().getPath())) {
+                                // Convert the Uri from the intent into a Video Thumbnail Bitmap, then add this to the arrayList
+                                Bitmap videoThumbnailDataBitmap = ThumbnailUtils.createVideoThumbnail(mediaUriData.getPath(), MediaStore.Video.Thumbnails.MINI_KIND);
+                                mediaArrayList.add(videoThumbnailDataBitmap);
                                 myGalleryRecyclerViewAdapter.notifyDataSetChanged();
-                            } catch (IOException e) {
-                                e.printStackTrace();
                             }
-                            // Check if the media in the intent is a video
-                        } else if (isMediaVideo(retrievedMediaData.getData().getPath())) {
-                            // Convert the Uri from the intent into a Video Thumbnail, then add this to the arrayList
-                            Bitmap videoThumbnailBitmap = ThumbnailUtils.createVideoThumbnail(retrievedMediaData.getData().getPath(), MediaStore.Video.Thumbnails.MINI_KIND);
-                            mediaArrayList.add(videoThumbnailBitmap);
-                            myGalleryRecyclerViewAdapter.notifyDataSetChanged();
+                        } else if (retrievedMediaData.getClipData() != null) {
+                            ClipData mediaClipData = retrievedMediaData.getClipData();
+                            // If multiple images are selected, loop through them as clip data items
+                            for (int i = 0; i < mediaClipData.getItemCount(); i++) {
+                                ClipData.Item mediaClipItem = mediaClipData.getItemAt(i);
+                                Uri mediaClipDataUri = mediaClipItem.getUri();
+                                if (isMediaImage(mediaClipDataUri.getPath())) {
+                                    try {
+                                        Bitmap imageClipDataBitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), mediaClipDataUri);
+                                        mediaArrayList.add(imageClipDataBitmap);
+                                        myGalleryRecyclerViewAdapter.notifyDataSetChanged();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else if (isMediaVideo(mediaClipDataUri.getPath())) {
+                                    Bitmap videoThumbnailClipDataBitmap = ThumbnailUtils.createVideoThumbnail(mediaClipDataUri.getPath(), MediaStore.Video.Thumbnails.MINI_KIND);
+                                    mediaArrayList.add(videoThumbnailClipDataBitmap);
+                                    myGalleryRecyclerViewAdapter.notifyDataSetChanged();
+                                }
+
+                            }
                         }
                     }
                 } else {

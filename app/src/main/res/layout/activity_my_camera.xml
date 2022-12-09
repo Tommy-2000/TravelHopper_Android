@@ -2,6 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/myCameraActivityLayout"
+    android:tag="MY_CAMERA_ACTIVITY"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
@@ -10,7 +12,8 @@
     <androidx.camera.view.PreviewView
         android:id="@+id/previewViewFinder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_gravity="fill"/>
 
     <LinearLayout
         android:id="@+id/cameraControlsButtonGroup"
@@ -46,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginStart="100dp"
+                android:layout_marginStart="60dp"
                 android:contentDescription="@string/take_photo"
                 android:elevation="10dp"
                 android:fitsSystemWindows="true"
@@ -54,17 +57,17 @@
                 android:src="@drawable/ic_camera_icon"
                 tools:ignore="DuplicateSpeakableTextCheck" />
 
-<!--            <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--                android:id="@+id/switch_camera_button"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="end"-->
-<!--                android:layout_marginStart="50dp"-->
-<!--                android:contentDescription="@string/switch_cameras"-->
-<!--                android:elevation="10dp"-->
-<!--                android:fitsSystemWindows="true"-->
-<!--                android:minHeight="48dp"-->
-<!--                android:src="@drawable/ic_camera_switch_icon" />-->
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/switch_camera_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginStart="60dp"
+                android:contentDescription="@string/switch_cameras"
+                android:elevation="10dp"
+                android:fitsSystemWindows="true"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_camera_switch_icon" />
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

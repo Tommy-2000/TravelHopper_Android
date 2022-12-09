@@ -2,12 +2,13 @@
 
 buildscript {
     repositories {
-        google()
-        mavenCentral()
+        google()  // Google's Maven repository
+        mavenCentral()  // Maven Central repository
     }
     dependencies {
         classpath "com.android.tools.build:gradle:7.3.1"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3"
+        classpath 'com.google.gms:google-services:4.3.14'
     }
 }
 
@@ -15,5 +16,5 @@ plugins {
     id 'com.android.application' version '7.3.1' apply false
     id 'com.android.library' version '7.3.1' apply false
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin' version '2.0.1' apply false
-    id 'com.google.dagger.hilt.android' version '2.44' apply false
+    id 'com.google.gms.google-services' version '4.3.14' apply false
 }

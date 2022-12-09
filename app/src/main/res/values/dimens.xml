@@ -19,5 +19,8 @@
     <dimen name="md_sys_typescale_display_small_size">576.00sp</dimen>
     <dimen name="md_sys_typescale_display_medium_size">720.00sp</dimen>
     <dimen name="md_sys_typescale_display_large_size">912.00sp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
 
 </resources>

@@ -2,36 +2,48 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/myMapFragmentLayout"
+    android:id="@+id/rootFragmentLayout"
+    android:tag="MY_MAP_FRAGMENT"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MyMapFragment">
 
-    <RelativeLayout
-        android:id="@+id/fragmentContentLayout"
+    <FrameLayout
+        android:id="@+id/myMapFragmentLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="15dp">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/myMapFragmentTitle"
-            style="@style/TextAppearance.Material3.DisplayMedium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            android:text="@string/my_map_title" />
-
-        <FrameLayout
-            android:id="@+id/googleMapsFragmentContainer"
+        <RelativeLayout
+            android:id="@+id/fragmentRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/myMapFragmentTitle">
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <include android:id="@+id/googleMapsFragment" layout="@layout/fragment_google_maps"/>
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/myMapFragmentTitle"
+                style="@style/TextAppearance.Material3.DisplayMedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/my_map_title" />
 
-        </FrameLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/myMapFragmentTitle"
+                android:layout_marginTop="10dp">
 
-    </RelativeLayout>
+                <fragment
+                    android:id="@+id/googleMapsFragment"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:tag="googleMapsFragment" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
