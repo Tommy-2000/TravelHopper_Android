@@ -6,72 +6,106 @@ import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TravelHopperRepository {
 
     private final TravelHopperDAO travelHopperDAO;
 
-    private final LiveData<List<TripEntity>> allTripEntities;
-
-    private final LiveData<List<TripEntity>> favouriteTripEntities;
+    private static volatile TravelHopperRepository travelHopperRepositoryInstance;
 
     TravelHopperRepository(@NonNull Application application) {
         TravelHopperDatabase travelHopperDatabase = TravelHopperDatabase.getDatabase(application);
         travelHopperDAO = travelHopperDatabase.travelHopperDAO();
-        allTripEntities = travelHopperDAO.getAllTrips();
-        favouriteTripEntities = travelHopperDAO.getAllFavouriteTrips(true);
     }
 
+    public static TravelHopperRepository getInstance(Application application) {
+        if (travelHopperRepositoryInstance == null) {
+            synchronized (TravelHopperRepository.class) {
+                if (travelHopperRepositoryInstance == null) {
+                    travelHopperRepositoryInstance = new TravelHopperRepository(application);
+                }
+            }
+        }
+
+        return travelHopperRepositoryInstance;
+    }
 
     @WorkerThread
     LiveData<List<TripEntity>> getAllTripEntities() {
-        return allTripEntities;
+        return travelHopperDAO.getAllTrips();
     }
 
     @WorkerThread
-    int getIDFromTripEntity() { return travelHopperDAO.getIDFromTrip(); }
+    int getIDFromTripEntity() {
+        return travelHopperDAO.getIDFromTrip();
+    }
 
     @WorkerThread
-    String getNameFromTripEntity() { return travelHopperDAO.getNameFromTrip(); }
+    String getNameFromTripEntity() {
+        return travelHopperDAO.getNameFromTrip();
+    }
 
     @WorkerThread
-    String getLocationFromTripEntity() { return travelHopperDAO.getLocationFromTrip(); }
+    String getLocationFromTripEntity() {
+        return travelHopperDAO.getLocationFromTrip();
+    }
 
     @WorkerThread
-    String getMediaPathFromTripEntity() { return travelHopperDAO.getMediaPathFromTrip(); }
+    String getMediaPathFromTripEntity() {
+        return travelHopperDAO.getMediaPathFromTrip();
+    }
 
     @WorkerThread
-    Long getStartDateFromTripEntity() { return travelHopperDAO.getStartDateFromTrip(); }
+    String getStartDateFromTripEntity() {
+        return travelHopperDAO.getStartDateFromTrip();
+    }
 
     @WorkerThread
-    Long getEndDateFromTripEntity() { return travelHopperDAO.getEndDateFromTrip(); }
+    String getEndDateFromTripEntity() {
+        return travelHopperDAO.getEndDateFromTrip();
+    }
 
     @WorkerThread
-    String getDetailsFromTripEntity() { return travelHopperDAO.getDetailsFromTrip(); }
+    String getDetailsFromTripEntity() {
+        return travelHopperDAO.getDetailsFromTrip();
+    }
 
 
     @WorkerThread
-    LiveData<List<TripEntity>> getAllFavouriteTrips() { return favouriteTripEntities; }
+    LiveData<List<TripEntity>> getAllFavouriteTrips() {
+        return travelHopperDAO.getAllFavouriteTrips(true);
+    }
 
     @WorkerThread
-    LiveData<List<TripEntity>> getAllTripsByName(String tripName) { return travelHopperDAO.getAllTripsByName(tripName); }
+    LiveData<List<TripEntity>> getAllTripsByName(String tripName) {
+        return travelHopperDAO.getAllTripsByName(tripName);
+    }
 
     @WorkerThread
-    LiveData<List<TripEntity>> getAllTripsAlphabetically() { return travelHopperDAO.getAllTripsAlphabetically(); }
+    LiveData<List<TripEntity>> getAllTripsAscendingOrder() {
+        return travelHopperDAO.getAllTripsByAscendingOrder();
+    }
 
     @WorkerThread
-    LiveData<List<TripEntity>> getAllTripsReverseAlphabetically() { return travelHopperDAO.getAllTripsReverseAlphabetically(); }
+    LiveData<List<TripEntity>> getAllTripsDescendingOrder() {
+        return travelHopperDAO.getAllTripsByDescendingOrder();
+    }
 
     @WorkerThread
-    LiveData<List<TripEntity>> getAllTripsByLocation(String tripLocation) { return travelHopperDAO.getAllTripsByLocation(tripLocation); }
+    LiveData<List<TripEntity>> getAllTripsByLocation(String tripLocation) {
+        return travelHopperDAO.getAllTripsByLocation(tripLocation);
+    }
 
     @WorkerThread
-    LiveData<List<TripEntity>> getAllTripsByStartDate(Long tripStartDate) { return travelHopperDAO.getAllTripsByStartDate(tripStartDate); }
+    LiveData<List<TripEntity>> getAllTripsByStartDate(Long tripStartDate) {
+        return travelHopperDAO.getAllTripsByStartDate(tripStartDate);
+    }
 
     @WorkerThread
-    LiveData<List<TripEntity>> getAllTripsByEndDate(Long tripEndDate) { return travelHopperDAO.getAllTripsByEndDate(tripEndDate); }
+    LiveData<List<TripEntity>> getAllTripsByEndDate(Long tripEndDate) {
+        return travelHopperDAO.getAllTripsByEndDate(tripEndDate);
+    }
 
     @WorkerThread
     void insertTripEntity(TripEntity tripEntity) {

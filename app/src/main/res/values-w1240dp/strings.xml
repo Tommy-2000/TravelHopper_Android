@@ -93,10 +93,5 @@
     <string name="permission_required_title">Location permission is required</string>
     <string name="permission_required_message">Access to location permissions is required to track your current position.</string>
     <string name="track_my_location">Track my location</string>
-    <string name="guestID">Guest ID</string>
-    <string name="guestDisplayName">Guest Display Name</string>
-    <string name="guestGivenName">Guest Given Name</string>
-    <string name="guestEmail">Guest Email</string>
-    <string name="latest_media">Latest Media</string>
 
 </resources>

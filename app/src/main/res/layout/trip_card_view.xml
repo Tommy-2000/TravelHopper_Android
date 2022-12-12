@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/myHomeTripCardView"
     style="?attr/materialCardViewElevatedStyle"
-    android:layout_width="200dp"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="2dp"
+    app:cardUseCompatPadding="true">
 
     <RelativeLayout
         android:id="@+id/tripCardContent"
@@ -17,7 +21,8 @@
         <ImageView
             android:id="@+id/tripMedia"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="250dp"
+            android:src="@drawable/unsplash_placeholder_medium"/>
 
         <CheckBox
             android:id="@+id/tripFavouriteIcon"
@@ -32,7 +37,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:layout_below="@id/tripMedia">
 
             <TextView
                 android:id="@+id/tripName"

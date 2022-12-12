@@ -14,6 +14,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
+import java.util.Objects;
+
 import uk.ac.tees.b1662096.travelhopper_travelapp.data.model.TravelHopperUser;
 
 /**
@@ -73,7 +75,7 @@ public class SplashRepository {
                         travelHopperUserLiveData.setValue(travelHopperUser);
                     }
                 } else {
-                    Log.e("SNAPSHOT_TASK_EXCEPTION", snapshotTask.getException().getLocalizedMessage());
+                    Log.e("SNAPSHOT_TASK_EXCEPTION", Objects.requireNonNull(snapshotTask.getException()).getLocalizedMessage());
                 }
             }
         });

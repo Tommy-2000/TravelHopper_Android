@@ -5,14 +5,15 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     namespace 'uk.ac.tees.b1662096.travelhopper_travelapp'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "uk.ac.tees.b1662096.travelhopper_travelapp"
         minSdk 23
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
+        buildConfigField("String", "WEB_CLIENT_ID", '"139975808565-bqdv5d3ieeqpcn2j2imba883vtnqpo48.apps.googleusercontent.com"')
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
@@ -80,6 +81,9 @@ dependencies {
     // Android Glide Image loading Libraries
     def glide_version = "4.14.2"
     implementation "com.github.bumptech.glide:glide:$glide_version"
+    implementation ("com.github.bumptech.glide:recyclerview-integration:$glide_version") {
+        transitive = false
+    }
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
 
     // Android Room Data Persistence Libraries
@@ -91,12 +95,15 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:31.1.0')
     // Google Firebase Auth Libraries
     implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.firebaseui:firebase-ui-auth:8.0.2'
     implementation 'com.google.android.gms:play-services-auth:20.4.0'
     implementation 'com.google.api-client:google-api-client:2.1.1'
     // Google Firebase Cloud Firestore Library
     implementation 'com.google.firebase:firebase-firestore'
     // Google Firebase Cloud Storage Library
     implementation 'com.google.firebase:firebase-storage'
+    // Google Firebase Cloud Messaging Library
+//    implementation 'com.google.firebase:firebase-messaging'
 
     // Google Maps SDK Libraries
     implementation 'com.google.android.libraries.places:places:2.7.0'

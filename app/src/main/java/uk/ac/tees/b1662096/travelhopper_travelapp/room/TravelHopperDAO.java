@@ -3,7 +3,6 @@ package uk.ac.tees.b1662096.travelhopper_travelapp.room;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
-import androidx.room.Entity;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -30,10 +29,10 @@ public interface TravelHopperDAO {
     String getMediaPathFromTrip();
 
     @Query("SELECT trip_start_date FROM tripEntity")
-    Long getStartDateFromTrip();
+    String getStartDateFromTrip();
 
     @Query("SELECT trip_end_date FROM tripEntity")
-    Long getEndDateFromTrip();
+    String getEndDateFromTrip();
 
     @Query("SELECT trip_details FROM tripEntity")
     String getDetailsFromTrip();
@@ -42,10 +41,10 @@ public interface TravelHopperDAO {
     LiveData<List<TripEntity>> getAllTripsByName(String tripName);
 
     @Query("SELECT * FROM tripEntity ORDER BY trip_name ASC")
-    LiveData<List<TripEntity>> getAllTripsAlphabetically();
+    LiveData<List<TripEntity>> getAllTripsByAscendingOrder();
 
     @Query("SELECT * FROM tripEntity ORDER BY trip_name DESC")
-    LiveData<List<TripEntity>> getAllTripsReverseAlphabetically();
+    LiveData<List<TripEntity>> getAllTripsByDescendingOrder();
 
     @Query("SELECT * FROM tripEntity WHERE trip_location = :tripLocation")
     LiveData<List<TripEntity>> getAllTripsByLocation(String tripLocation);

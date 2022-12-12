@@ -7,9 +7,11 @@
         android:title="@string/ascending_trips" />
     <item
         android:id="@+id/descending_trips"
+        android:icon="@drawable/ic_arrow_down_icon"
         android:title="@string/descending_trips" />
     <item
         android:id="@+id/favourite_trips"
+        android:icon="@drawable/ic_favourite_filled_icon"
         android:title="@string/favourite_trips" />
 
 </menu>

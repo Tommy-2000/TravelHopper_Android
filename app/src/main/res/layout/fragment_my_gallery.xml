@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootFragmentLayout"
-    android:tag="MY_GALLERY_FRAGMENT"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:tag="MY_GALLERY_FRAGMENT"
     tools:context=".MyGalleryFragment">
 
-    <FrameLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/myGalleryFragmentLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/fragmentRelativeLayout"
+            android:id="@+id/contentRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="10dp">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/myGalleryFragmentTitle"
@@ -27,33 +27,22 @@
                 android:layout_height="wrap_content"
                 android:text="@string/my_gallery_title" />
 
-            <RelativeLayout
-                android:id="@+id/filterButtonGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/myGalleryFragmentTitle"
-                android:orientation="horizontal"
-                android:padding="16dp">
-
-                <Button
-                    android:id="@+id/galleryFilterButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/filter_string"
-                    tools:ignore="TextContrastCheck" />
-
-            </RelativeLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/myGalleryRecyclerView"
-                android:name="uk.ac.tees.b1662096.travelhopper_travelapp.GalleryFragment"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/myGalleryRefreshLayout"
                 android:layout_width="match_parent"
-                android:layout_height="650dp"
-                android:layout_below="@id/filterButtonGroup"
-                app:layoutManager="LinearLayoutManager"
-                tools:context=".MyGalleryFragment"
-                tools:listitem="@layout/media_card_view" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="50dp"
+                android:layout_below="@id/myGalleryFragmentTitle">
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/myGalleryRecyclerView"
+                    android:name="uk.ac.tees.b1662096.travelhopper_travelapp.GalleryFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="650dp"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    tools:listitem="@layout/media_card_view" />
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         </RelativeLayout>
 
@@ -68,6 +57,6 @@
             android:fitsSystemWindows="true"
             android:src="@drawable/ic_add_media_icon" />
 
-    </FrameLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>

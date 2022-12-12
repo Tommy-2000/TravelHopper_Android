@@ -2,6 +2,7 @@ package uk.ac.tees.b1662096.travelhopper_travelapp.ui.firebaseAuth;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import android.app.Application;
 
@@ -14,20 +15,27 @@ public class FirebaseAuthViewModel extends AndroidViewModel {
 
     private AuthRepository authRepository;
 
-    public LiveData<TravelHopperUser> authenticatedUserData;
-    public LiveData<TravelHopperUser> createdUserData;
+//    public MutableLiveData<TravelHopperUser> authenticatedEmailPasswordUserData;
+//    public MutableLiveData<TravelHopperUser> newEmailPasswordUserData;
+//    public MutableLiveData<TravelHopperUser> authenticatedGoogleLiveData;
 
     public FirebaseAuthViewModel(Application application) {
         super(application);
         authRepository = AuthRepository.getInstance();
     }
 
-    public void createNewUser(TravelHopperUser authenticatedUser) {
-        createdUserData = authRepository.addNewUserToFirestore(authenticatedUser);
-    }
+//    public void createNewEmailPasswordUser(String userName, String userPassword) {
+//        authRepository.firebaseCreateEmailPasswordAccount(userName, userPassword);
+//    }
+//
+
+//    public void addNewGoogleUser(TravelHopperUser googleAccountUser) {
+//        authenticatedGoogleLiveData.setValue(googleAccountUser);
+//        authRepository.addNewUserToFirestore(authenticatedGoogleLiveData);
+//    }
 
     public void signInWithGoogle(AuthCredential googleAuthCredential) {
-        authenticatedUserData = authRepository.firebaseSignInWithGoogle(googleAuthCredential);
+        authRepository.firebaseSignInWithGoogle(googleAuthCredential);
     }
 
 }

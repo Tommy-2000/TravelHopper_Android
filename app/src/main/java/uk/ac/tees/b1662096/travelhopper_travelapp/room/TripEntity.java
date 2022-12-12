@@ -1,9 +1,12 @@
 package uk.ac.tees.b1662096.travelhopper_travelapp.room;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Fts4;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "tripEntity")
@@ -23,11 +26,14 @@ public class TripEntity {
     @ColumnInfo(name = "trip_media_path")
     private final String tripMediaPath;
 
+    @Ignore
+    private final Uri tripMediaUri;
+
     @ColumnInfo(name = "trip_start_date")
-    private final Long tripStartDate;
+    private final String tripStartDate;
 
     @ColumnInfo(name = "trip_end_date")
-    private final Long tripEndDate;
+    private final String tripEndDate;
 
     @ColumnInfo(name = "trip_details")
     private final String tripDetails;
@@ -36,11 +42,12 @@ public class TripEntity {
     @ColumnInfo(name = "trip_favourite")
     private final boolean tripFavourite;
 
-    public TripEntity(int tripID, @NonNull String tripName, String tripLocation, String tripMediaPath, @NonNull Long tripStartDate, @NonNull Long tripEndDate, String tripDetails, boolean tripFavourite) {
+    public TripEntity(int tripID, @NonNull String tripName, String tripLocation, String tripMediaPath, @NonNull String tripStartDate, @NonNull String tripEndDate, String tripDetails, boolean tripFavourite) {
         this.tripID = tripID;
         this.tripName = tripName;
         this.tripLocation = tripLocation;
         this.tripMediaPath = tripMediaPath;
+        this.tripMediaUri = null;
         this.tripStartDate = tripStartDate;
         this.tripEndDate = tripEndDate;
         this.tripDetails = tripDetails;
@@ -65,11 +72,15 @@ public class TripEntity {
         return tripMediaPath;
     }
 
-    public Long getTripStartDate() {
+    public Uri getTripMediaUri() {
+        return tripMediaUri;
+    }
+
+    public String getTripStartDate() {
         return tripStartDate;
     }
 
-    public Long getTripEndDate() {
+    public String getTripEndDate() {
         return tripEndDate;
     }
 
@@ -81,7 +92,6 @@ public class TripEntity {
     public boolean isTripFavourite() {
         return tripFavourite;
     }
-
 }
 
 //@Fts4(contentEntity = TripEntity.class)

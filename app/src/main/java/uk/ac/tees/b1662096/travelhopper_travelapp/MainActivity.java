@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.compose.runtime.snapshots.SnapshotKt;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
@@ -24,12 +25,15 @@ import com.google.android.material.color.DynamicColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -41,6 +45,7 @@ import java.io.InputStream;
 
 import uk.ac.tees.b1662096.travelhopper_travelapp.data.model.TravelHopperUser;
 import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.ActivityMainBinding;
+import uk.ac.tees.b1662096.travelhopper_travelapp.ui.firebaseAuth.SignInActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String TRAVELHOPPER_USER;
 
-    private GoogleSignInClient googleSignInClient;
+    private String FIREBASE_USER;
 
     private FloatingActionButton googleAccountProfileButton;
 
@@ -65,16 +70,19 @@ public class MainActivity extends AppCompatActivity {
         rootView = activityMainBinding.getRoot();
         setContentView(rootView);
 
-        // Get the signed-in user from the intent
-        TravelHopperUser travelHopperUser = getUserFromLoginIntent();
-
-        showSnackBarSignInMessage(travelHopperUser);
+        // Get the signed-in Firebase user from the intent
+        FirebaseUser firebaseUser = getFirebaseUserFromLoginIntent();
+        // Check if the user has signed in, if so show a snackbar message
+        if (firebaseUser != null) {
+            showSnackBarFirebaseSignInMessage(firebaseUser);
+        }
 
         // Get the Google Sign In Client with predefined sign in options
         getGoogleSignInClient();
 
         // Get the Profile image associated with the Google Account and set it to the button
         getGoogleAccountProfileInfo();
+
 
         // Set up Navigation between the four different Fragments in the NavHostFragment and the BottomNavigationView
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(activityMainBinding.navHostFragment.getId());
@@ -93,6 +101,10 @@ public class MainActivity extends AppCompatActivity {
         googleAccountProfileButton = activityMainBinding.googleAccountProfileButton;
         googleAccountProfileButton.setOnClickListener(view -> showAccountMenu(view, R.menu.profile_menu));
     }
+
+//    private void checkForNotifications() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.T)
+//    }
 
     @SuppressLint("RestrictedApi")
     private void showAccountMenu(View view, @MenuRes int menuRes) {
@@ -135,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void navigateToGoogleAccount() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        GoogleAccountFragment googleAccountFragment = GoogleAccountFragment.newInstance();
+        GoogleAccountFragment googleAccountFragment = (GoogleAccountFragment) getSupportFragmentManager().findFragmentByTag("GOOGLE_ACCOUNT_FRAGMENT");
         fragmentTransaction.replace(activityMainBinding.navHostFragment.getId(), googleAccountFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.setReorderingAllowed(false);
@@ -155,34 +167,44 @@ public class MainActivity extends AppCompatActivity {
         googleAccountProfileButton.setVisibility(View.GONE);
     }
 
-    private void showSnackBarSignInMessage(TravelHopperUser travelHopperUser) {
-        String signInMessage = "You are signed in as: " + travelHopperUser.getUserName();
-        Snackbar.make(rootView, signInMessage, Snackbar.LENGTH_SHORT).show();
+    private void navigateToSignInActivity() {
+        Intent navigateToSignIn = new Intent(this, SignInActivity.class);
+        startActivity(navigateToSignIn);
+        // Make sure that the account button from the Main Activity is not visible when navigating
+        googleAccountProfileButton.setVisibility(View.GONE);
+    }
+
+//    private void showSnackBarSignInMessage(TravelHopperUser travelHopperUser) {
+//        String signInMessage = "You are signed in as: " + travelHopperUser.getUserDisplayName();
+//        Snackbar.make(rootView, signInMessage, Snackbar.LENGTH_SHORT).show();
+//    }
+
+    private void showSnackBarFirebaseSignInMessage(FirebaseUser firebaseUser) {
+        String signInFirebaseMessage = "You are signed in as: " + firebaseUser.getDisplayName();
+        Snackbar.make(rootView, signInFirebaseMessage, Snackbar.LENGTH_SHORT).show();
     }
 
     private void getGoogleAccountProfileInfo() {
         GoogleSignInAccount googleAccount = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
         if (googleAccount != null) {
-            String accountProfileID = googleAccount.getId();
+//            String accountProfileID = googleAccount.getId();
             Uri accountProfileImage = googleAccount.getPhotoUrl();
-            setProfileImageToButton(accountProfileImage);
+            if (accountProfileImage != null) {
+                Drawable googleAccountDrawable = Drawable.createFromPath(accountProfileImage.getPath());
+                googleAccountProfileButton.setBackgroundDrawable(googleAccountDrawable);
+            } else {
+                Drawable defaultAccountDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_account_circle_icon, getTheme());
+                googleAccountProfileButton.setBackgroundDrawable(defaultAccountDrawable);
+            }
         }
-    }
-
-    private void setProfileImageToButton(Uri accountProfileImage) {
-        Drawable accountProfileDrawable;
-        try {
-            InputStream uriInputStream = getContentResolver().openInputStream(accountProfileImage);
-            accountProfileDrawable = Drawable.createFromStream(uriInputStream, accountProfileImage.toString());
-        } catch (FileNotFoundException e) {
-            accountProfileDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_account_circle_icon, getTheme());
-            e.printStackTrace();
-        }
-        googleAccountProfileButton.setBackgroundDrawable(accountProfileDrawable);
     }
 
     private TravelHopperUser getUserFromLoginIntent() {
         return (TravelHopperUser) getIntent().getSerializableExtra(TRAVELHOPPER_USER);
+    }
+
+    private FirebaseUser getFirebaseUserFromLoginIntent() {
+        return (FirebaseUser) getIntent().getSerializableExtra(FIREBASE_USER);
     }
 
     private void getGoogleSignInClient() {
@@ -190,23 +212,23 @@ public class MainActivity extends AppCompatActivity {
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .build();
 
-        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
     }
 
     private void signOutGoogleUser() {
         // Sign out the user from the app itself using Firebase Auth
         FirebaseAuth.getInstance().signOut();
-//        googleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
-//            @Override
-//            public void onComplete(@NonNull Task<Void> task) {
-//                Log.d("GOOGLE_CLIENT_SIGN_OUT", "User has signed out of ");
-//            }
-//        });
+        navigateToSignInActivity();
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, activityMainBinding.navHostFragment.getId());
         return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }
