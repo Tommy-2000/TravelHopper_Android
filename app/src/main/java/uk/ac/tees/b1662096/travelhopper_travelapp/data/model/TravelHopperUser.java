@@ -8,15 +8,15 @@ import java.io.Serializable;
 public class TravelHopperUser implements Serializable {
 
     public String userId;
-    public String userName;
+    public String userDisplayName;
     public String userEmail;
     public boolean isUserAuthenticated, isNewUser, isUserCreated;
 
     public TravelHopperUser() {}
 
-    public TravelHopperUser(String userId, String userName, String userEmail) {
+    public TravelHopperUser(String userId, String userDisplayName, String userEmail) {
         this.userId = userId;
-        this.userName = userName;
+        this.userDisplayName = userDisplayName;
         this.userEmail = userEmail;
     }
 
@@ -24,12 +24,15 @@ public class TravelHopperUser implements Serializable {
         return userId;
     }
 
-    public String getUserName() {
-        return userName;
+
+    public String getUserDisplayName() {
+        return userDisplayName;
     }
+
 
     public String getUserEmail() {
         return userEmail;
     }
+
 
 }

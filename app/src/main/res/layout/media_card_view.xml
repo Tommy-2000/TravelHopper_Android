@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mediaCardView"
     style="?attr/materialCardViewElevatedStyle"
-    android:layout_width="wrap_content"
+    android:layout_width="175dp"
     android:layout_height="wrap_content"
-    android:checkable="true"
-    android:clickable="true"
-    android:focusable="true">
+    app:cardCornerRadius="20dp"
+    app:cardElevation="2dp"
+    app:cardUseCompatPadding="true">
 
     <ImageView
         android:id="@+id/mediaImageView"
         android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:contentDescription="@string/media_content_description"
         android:scaleType="centerCrop" />
 

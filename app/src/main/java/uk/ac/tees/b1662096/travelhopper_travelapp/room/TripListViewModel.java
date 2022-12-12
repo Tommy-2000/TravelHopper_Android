@@ -8,15 +8,15 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-public class TripViewModel extends AndroidViewModel {
+public class TripListViewModel extends AndroidViewModel {
 
     private TravelHopperRepository travelHopperRepository;
 
-    private final LiveData<List<TripEntity>> allTripsLiveData;
+    private LiveData<List<TripEntity>> allTripsLiveData;
 
-    private final LiveData<List<TripEntity>> allFavouriteTripsLiveData;
+    private LiveData<List<TripEntity>> allFavouriteTripsLiveData;
 
-    public TripViewModel(@NonNull Application application) {
+    public TripListViewModel(@NonNull Application application) {
         super(application);
         travelHopperRepository = new TravelHopperRepository(application);
         allTripsLiveData = travelHopperRepository.getAllTripEntities();
@@ -36,8 +36,12 @@ public class TripViewModel extends AndroidViewModel {
         return travelHopperRepository.getAllTripsByLocation(tripLocation);
     }
 
-    public LiveData<List<TripEntity>> getAllTripsAlphabetically() {
-        return travelHopperRepository.getAllTripsAlphabetically();
+    public LiveData<List<TripEntity>> getAllTripsAscendingOrder() {
+        return travelHopperRepository.getAllTripsAscendingOrder();
+    }
+
+    public LiveData<List<TripEntity>> getAllTripsDescendingOrder() {
+        return travelHopperRepository.getAllTripsDescendingOrder();
     }
 
     public LiveData<List<TripEntity>> getAllTripsByStartDate(Long tripStartDate) {
