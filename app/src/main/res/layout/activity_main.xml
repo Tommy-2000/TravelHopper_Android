@@ -59,19 +59,8 @@
         android:layout_alignParentEnd="true"
         android:layout_margin="20dp"
         android:contentDescription="@string/google_account_profile_button"
-        style="?attr/floatingActionButtonSmallPrimaryStyle" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/mySettingsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="20dp"
-        android:layout_below="@id/googleAccountProfileButton"
-        android:contentDescription="@string/settings_button"
         style="?attr/floatingActionButtonSmallPrimaryStyle"
-        app:srcCompat="@drawable/ic_settings_icon" />
+        android:src="@drawable/ic_account_circle_icon"/>
 
     </RelativeLayout>
 

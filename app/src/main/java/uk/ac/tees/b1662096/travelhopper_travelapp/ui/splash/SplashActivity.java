@@ -7,11 +7,18 @@ import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import uk.ac.tees.b1662096.travelhopper_travelapp.MainActivity;
 import uk.ac.tees.b1662096.travelhopper_travelapp.data.model.TravelHopperUser;
 import uk.ac.tees.b1662096.travelhopper_travelapp.ui.firebaseAuth.SignInActivity;
 
 public class SplashActivity extends AppCompatActivity {
+
+    private FirebaseAuth firebaseAuth;
+
+    private FirebaseUser currentFirebaseUser;
 
     private SplashViewModel splashViewModel;
 
@@ -21,16 +28,18 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        splashViewModel = new ViewModelProvider(this).get(SplashViewModel.class);
+        firebaseAuth = FirebaseAuth.getInstance();
 
-        splashViewModel.checkIfUserIsAuthenticated();
-        splashViewModel.isUserAuthenticatedData.observe(this, travelHopperUser -> {
-            if (!travelHopperUser.isUserAuthenticated) {
-                navigateToSignInActivity();
-            } else {
-                getUserFromFirestore(travelHopperUser.userId);
-            }
-        });
+        splashViewModel = new ViewModelProvider(this).get(SplashViewModel.class);
+        navigateToSignInActivity();
+//        splashViewModel.checkIfUserIsAuthenticated();
+//        splashViewModel.isUserAuthenticatedData.observe(this, travelHopperUser -> {
+//            if (!travelHopperUser.isUserAuthenticated && firebaseAuth.getCurrentUser() == null) {
+//
+//            } else {
+//                getUserFromFirestore(travelHopperUser.userId);
+//            }
+//        });
 
     }
 

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activitySignInLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.firebaseAuth.SignInActivity">
+
+    <RelativeLayout
+        android:id="@+id/activityContentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="25dp">
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/signInActivityTitle"
+            style="@style/TextAppearance.Material3.DisplayMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_activity_title" />
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/signInBannerCardView"
+            android:layout_width="700dp"
+            android:layout_height="240dp"
+            android:layout_marginTop="200dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            app:cardElevation="@dimen/cardview_default_elevation">
+
+            <ImageView
+                android:id="@+id/signInBannerImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/unsplash_placeholder_large" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <RelativeLayout
+            android:id="@+id/signInButtonLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true">
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/signInButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:enabled="true"
+                android:text="@string/action_sign_in_email_password" />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/continueAsGuest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/signInButton"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="35dp"
+                android:enabled="true"
+                android:text="@string/continue_as_guest" />
+
+        </RelativeLayout>
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/circularProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="64dp"
+            android:layout_marginBottom="64dp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
