@@ -9,8 +9,11 @@ import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -26,8 +29,13 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.OnMapsSdkInitializedCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.internal.IUiSettingsDelegate;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.dialog.MaterialDialogs;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.FragmentMyMapBinding;
@@ -102,47 +110,49 @@ public class MyMapFragment extends Fragment implements OnMapsSdkInitializedCallb
         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentByTag("googleMapsFragment");
 
         if (supportMapFragment != null) {
-            supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(@NonNull GoogleMap googleMap) {
-                    // Initialise the Google Maps SDK
-                    gMapSDK = googleMap;
+            supportMapFragment.getMapAsync(googleMap -> {
+                // Initialise the Google Maps SDK
+                gMapSDK = googleMap;
 
-                    // Initialise the marker position in Google Maps
-                    LatLng kyoto = new LatLng(35.00116, 135.7681);
-                    gMapSDK.addMarker(new MarkerOptions().position(kyoto).title("Marker in Kyoto, Japan"));
-                    gMapSDK.moveCamera(CameraUpdateFactory.newLatLng(kyoto));
+                // Initialise the marker position in Google Maps
+                LatLng kyoto = new LatLng(35.00116, 135.7681);
+                gMapSDK.addMarker(new MarkerOptions().position(kyoto).title("Marker in Kyoto, Japan"));
+                gMapSDK.moveCamera(CameraUpdateFactory.newLatLng(kyoto));
 
-                    // Enable the user's location once permissions are checked
-                    enableMapLocation();
+                gMapSDK.setOnMyLocationClickListener(currentLocation -> Snackbar.make(rootFragmentView, "Current location: \n" + currentLocation, Snackbar.LENGTH_SHORT).show());
 
-                    gMapSDK.setOnMyLocationClickListener(new GoogleMap.OnMyLocationClickListener() {
-                        @Override
-                        public void onMyLocationClick(@NonNull Location currentLocation) {
-                            Snackbar.make(rootFragmentView, "Current location: \n" + currentLocation, Snackbar.LENGTH_SHORT).show();
-                        }
-                    });
+                // Initialise the current location button in Google Maps
+                gMapSDK.setOnMyLocationButtonClickListener(() -> {
+                    Snackbar.make(rootFragmentView, "My Location button is clicked", Snackbar.LENGTH_SHORT).show();
+                    return false;
+                });
 
-                    // Initialise the current location button in Google Maps
-                    gMapSDK.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-                        @Override
-                        public boolean onMyLocationButtonClick() {
-                            Snackbar.make(rootFragmentView, "My Location button is clicked", Snackbar.LENGTH_SHORT).show();
-                            return false;
-                        }
-                    });
+                // Set up options for Google Maps
+                gMapOptions.compassEnabled(true);
+                gMapOptions.scrollGesturesEnabled(true);
+                gMapOptions.rotateGesturesEnabled(true);
+                gMapOptions.zoomGesturesEnabled(true);
+                gMapOptions.scrollGesturesEnabledDuringRotateOrZoom(true);
+                gMapOptions.ambientEnabled(true);
 
-                    // Set up options for Google Maps
-                    gMapOptions.compassEnabled(true);
-                    gMapOptions.scrollGesturesEnabled(true);
-                    gMapOptions.rotateGesturesEnabled(true);
-                    gMapOptions.zoomGesturesEnabled(true);
-                    gMapOptions.scrollGesturesEnabledDuringRotateOrZoom(true);
-                }
+
             });
         }
 
         return rootFragmentView;
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View fragmentView, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(fragmentView, savedInstanceState);
+        FloatingActionButton trackMyLocationButton = fragmentMyMapBinding.trackMyLocationButton;
+        // Enable the user's location on button click
+        trackMyLocationButton.setOnClickListener(view -> {
+            // Check for permissions first before setting setMyLocationEnabled to true
+            enableMapLocation();
+        });
+
     }
 
     private boolean accessCoarseLocationPermissionGranted() {
@@ -162,7 +172,6 @@ public class MyMapFragment extends Fragment implements OnMapsSdkInitializedCallb
     private void enableMapLocation() {
         if (accessCoarseLocationPermissionGranted() && accessFineLocationPermissionGranted()) {
             gMapSDK.setMyLocationEnabled(true);
-            return;
         } else {
             requestLocationPermissions();
         }
@@ -184,8 +193,17 @@ public class MyMapFragment extends Fragment implements OnMapsSdkInitializedCallb
 //    public void onResume() {
 //        super.onResume();
 //        if (permissionDenied) {
-//
+//            showMissingPermissionError();
+//            permissionDenied = false;
 //        }
+//    }
+
+//    private void showMissingPermissionError() {
+//        MaterialAlertDialogBuilder missingPermissionDialog =
+//                new MaterialAlertDialogBuilder(requireContext())
+//                        .setTitle(getResources().getString(R.string.permission_required_title))
+//                        .setMessage(getResources().getString(R.string.permission_required_message))
+//                        .setNeutralButton(getResources().getString(R.string))
 //    }
 
     @Override
