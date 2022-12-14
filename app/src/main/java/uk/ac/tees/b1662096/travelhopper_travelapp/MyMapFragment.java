@@ -89,7 +89,7 @@ public class MyMapFragment extends Fragment implements OnMapsSdkInitializedCallb
                 NavHostFragment.findNavController(MyMapFragment.this).navigateUp();
             }
         };
-        requireParentFragment().requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
 
     }
 

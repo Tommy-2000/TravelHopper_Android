@@ -16,6 +16,9 @@ public interface TravelHopperDAO {
     @Query("SELECT * FROM tripEntity")
     LiveData<List<TripEntity>> getAllTrips();
 
+    @Query("SELECT * FROM tripEntity WHERE tripId = :tripID")
+    LiveData<TripEntity> getTrip(String tripID);
+
     @Query("SELECT tripId FROM tripEntity")
     int getIDFromTrip();
 
@@ -25,7 +28,7 @@ public interface TravelHopperDAO {
     @Query("SELECT trip_location FROM tripEntity")
     String getLocationFromTrip();
 
-    @Query("SELECT trip_media_path FROM tripEntity")
+    @Query("SELECT trip_media_uri FROM tripEntity")
     String getMediaPathFromTrip();
 
     @Query("SELECT trip_start_date FROM tripEntity")
@@ -55,8 +58,8 @@ public interface TravelHopperDAO {
     @Query("SELECT * FROM tripEntity WHERE trip_end_date = :tripEndDate")
     LiveData<List<TripEntity>> getAllTripsByEndDate(Long tripEndDate);
 
-    @Query("SELECT * FROM tripEntity WHERE trip_media_path = :tripMediaPath")
-    LiveData<List<TripEntity>> getAllTripsByMediaPath(String tripMediaPath);
+    @Query("SELECT * FROM tripEntity WHERE trip_media_uri = :tripMediaUri")
+    LiveData<List<TripEntity>> getAllTripsByMediaUri(String tripMediaUri);
 
     @Query("SELECT * FROM tripEntity WHERE trip_favourite LIKE :tripIsFavourite")
     LiveData<List<TripEntity>> getAllFavouriteTrips(boolean tripIsFavourite);

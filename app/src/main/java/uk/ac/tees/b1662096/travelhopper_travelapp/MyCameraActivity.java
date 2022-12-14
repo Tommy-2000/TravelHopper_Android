@@ -14,7 +14,6 @@ import androidx.camera.video.QualitySelector;
 import androidx.camera.video.Recorder;
 import androidx.camera.video.VideoRecordEvent;
 import androidx.camera.view.PreviewView;
-import androidx.camera.view.TransformUtils;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -135,14 +134,7 @@ public class MyCameraActivity extends AppCompatActivity {
         videoCaptureButton.setOnClickListener(view -> {
             // Check for permissions once the videoCaptureButton was clicked
             if (readExternalStoragePermissionGranted() && writeExternalStoragePermissionGranted() && recordAudioPermissionGranted()) {
-                // Check whether the app is currently recording a video. If not, start a new recording
-                if (curRecording) {
-                    videoRecording.stop();
-                    videoRecording = null;
-                } else {
-                    curRecording = true;
-                    captureVideoRecording();
-                }
+                captureVideoRecording();
             }
         });
 
@@ -342,28 +334,32 @@ public class MyCameraActivity extends AppCompatActivity {
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI).setContentValues(videoContentValues).build();
             // Retrieve the output stream from the capture and start the recording with the output options for the file
             try {
-                videoRecording = videoCapture.getOutput()
-                        .prepareRecording(this, videoOutputFileOptions)
-                        .withAudioEnabled()
-                        .start(ContextCompat.getMainExecutor(this), videoRecordEvent -> {
-                            if (videoRecordEvent instanceof VideoRecordEvent.Start) {
-                                Snackbar.make(rootView, "Video is now recording", Snackbar.LENGTH_SHORT).show();
-                                // Change the icon of the record button when recording starts and the button is clicked
-                                videoCaptureButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop_recording_icon, getApplicationContext().getTheme()));
-                                videoCaptureButton.isEnabled();
-                            } else if (videoRecordEvent instanceof VideoRecordEvent.Finalize) {
-                                if (!((VideoRecordEvent.Finalize) videoRecordEvent).hasError()) {
-                                    videoCaptureButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_record_red_icon, getApplicationContext().getTheme()));
-                                    Snackbar.make(rootView, "Video has been captured successfully", Snackbar.LENGTH_SHORT).show();
-
-                                    // Clear the contents of the video once the recording has stopped
-                                    videoContentValues.clear();
-                                } else {
-                                    videoRecording = null;
-                                    Snackbar.make(rootView, "Error while capturing video: " + "${error}", Snackbar.LENGTH_SHORT).show();
+                if (!curRecording) {
+                    videoRecording = videoCapture.getOutput()
+                            .prepareRecording(this, videoOutputFileOptions)
+                            .withAudioEnabled()
+                            .start(ContextCompat.getMainExecutor(this), videoRecordEvent -> {
+                                if (videoRecordEvent instanceof VideoRecordEvent.Start) {
+                                    Snackbar.make(rootView, "Video is now recording", Snackbar.LENGTH_SHORT).show();
+                                    // Change the icon of the record button when recording starts and the button is clicked
+                                    videoCaptureButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop_recording_icon, getApplicationContext().getTheme()));
+                                    videoCaptureButton.isEnabled();
+                                } else if (videoRecordEvent instanceof VideoRecordEvent.Finalize) {
+                                    if (!((VideoRecordEvent.Finalize) videoRecordEvent).hasError()) {
+                                        videoCaptureButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_record_red_icon, getApplicationContext().getTheme()));
+                                        Snackbar.make(rootView, "Video has been captured successfully", Snackbar.LENGTH_SHORT).show();
+                                        // Clear the contents of the video once the recording has stopped
+                                        videoContentValues.clear();
+                                    } else {
+                                        videoRecording = null;
+                                        Snackbar.make(rootView, "Error while capturing video: " + "${error}", Snackbar.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                } else {
+                    videoRecording.stop();
+                    curRecording = false;
+                }
             } catch (SecurityException se) {
                 se.printStackTrace();
             }
@@ -412,4 +408,3 @@ public class MyCameraActivity extends AppCompatActivity {
         cameraExecutor.shutdown();
     }
 }
-

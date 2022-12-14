@@ -74,7 +74,7 @@
     <string name="login_activity_title">Welcome to TravelHopper!</string>
     <string name="prompt_email">Enter Email</string>
     <string name="prompt_password">Enter Password</string>
-    <string name="action_sign_in_email_password">Sign in with email and password</string>
+    <string name="action_sign_in_email_password">Sign in with Email and Password</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">Welcome !</string>
     <string name="invalid_username">Not a valid username</string>
@@ -93,5 +93,12 @@
     <string name="permission_required_title">Location permission is required</string>
     <string name="permission_required_message">Access to location permissions is required to track your current position.</string>
     <string name="track_my_location">Track my location</string>
+    <string name="guestID">Guest ID</string>
+    <string name="guestDisplayName">Guest Display Name</string>
+    <string name="guestGivenName">Guest Given Name</string>
+    <string name="guestEmail">Guest Email</string>
+    <string name="latest_media">Latest Media</string>
+    <string name="action_register_email_password">Register with Email and Password</string>
+    <string name="register_activity_title">Create a new account</string>
 
 </resources>

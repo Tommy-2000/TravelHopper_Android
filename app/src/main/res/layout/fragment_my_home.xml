@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootFragmentLayout"
-    android:tag="MY_HOME_FRAGMENT"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:tag="MY_HOME_FRAGMENT"
     tools:context=".MyHomeFragment">
 
-    <FrameLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/myHomeFragmentLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/fragmentRelativeLayout"
+            android:id="@+id/contentRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="10dp">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/myHomeFragmentTitle"
@@ -27,16 +27,22 @@
                 android:layout_height="wrap_content"
                 android:text="@string/my_home_title" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/myHomeCardCarousel"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/cardCarouselRefreshLayout"
                 android:layout_width="match_parent"
-                android:layout_height="650dp"
-                android:layout_below="@+id/myHomeFragmentTitle"
-                android:layout_marginTop="25dp"
-                tools:listitem="@layout/my_home_trip_card_view" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_below="@+id/myHomeFragmentTitle">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/myHomeCardCarousel"
+                    android:layout_width="match_parent"
+                    android:layout_height="650dp" />
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         </RelativeLayout>
 
-    </FrameLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>

@@ -21,64 +21,9 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop"/>
 
-<!--        <RelativeLayout-->
-<!--            android:id="@+id/tripCardTextContent"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@id/tripMedia"-->
-<!--            android:orientation="vertical"-->
-<!--            android:padding="16dp">-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tripName"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="@string/trip_title"-->
-<!--                android:textAppearance="?attr/textAppearanceTitleLarge" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tripStartDate"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_below="@id/tripName"-->
-<!--                android:layout_marginTop="10dp"-->
-<!--                android:text="@string/trip_secondary_title"-->
-<!--                android:textAppearance="?attr/textAppearanceSubtitle2" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tripEndDate"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_below="@id/tripStartDate"-->
-<!--                android:layout_marginTop="10dp"-->
-<!--                android:text="@string/trip_secondary_title"-->
-<!--                android:textAppearance="?attr/textAppearanceSubtitle2" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tripLocation"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_below="@id/tripEndDate"-->
-<!--                android:layout_marginTop="10dp"-->
-<!--                android:text="@string/trip_secondary_title"-->
-<!--                android:textAppearance="?attr/textAppearanceSubtitle2" />-->
-
-<!--        </RelativeLayout>-->
-
-<!--        <CheckBox-->
-<!--            android:id="@+id/tripFavouriteIcon"-->
-<!--            style="?attr/materialIconButtonOutlinedStyle"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_alignEnd="@id/tripMedia"-->
-<!--            android:button="@drawable/sl_favourite_24dp"-->
-<!--            android:contentDescription="@string/favourite_button" />-->
-
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-        </com.google.android.material.progressindicator.CircularProgressIndicator>
+            android:layout_height="wrap_content"/>
 
     </RelativeLayout>
 

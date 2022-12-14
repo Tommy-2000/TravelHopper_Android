@@ -2,10 +2,10 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activitySignInLayout"
+    android:id="@+id/activityRegisterLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.firebaseAuth.SignInActivity">
+    tools:context=".ui.firebaseAuth.RegisterActivity">
 
     <RelativeLayout
         android:id="@+id/activityContentLayout"
@@ -16,11 +16,12 @@
 
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/signInActivityTitle"
+            android:id="@+id/registerActivityTitle"
             style="@style/TextAppearance.Material3.DisplayMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/login_activity_title" />
+            android:text="@string/register_activity_title" />
+
 
 
         <RelativeLayout
@@ -34,8 +35,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/usernameInputLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="200dp">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/usernameEditText"
@@ -66,35 +66,14 @@
 
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/signInButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/passwordInputLayout"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="50dp"
-                android:enabled="true"
-                android:text="@string/action_sign_in_email_password" />
-
-            <com.google.android.material.button.MaterialButton
                 android:id="@+id/registerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/signInButton"
-                android:layout_centerHorizontal="true"
                 android:layout_marginTop="50dp"
+                android:layout_below="@id/passwordInputLayout"
+                android:layout_centerHorizontal="true"
                 android:enabled="true"
                 android:text="@string/action_register_email_password" />
-
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/continueAsGuest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/registerButton"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="35dp"
-                android:enabled="true"
-                android:text="@string/continue_as_guest" />
 
         </RelativeLayout>
 

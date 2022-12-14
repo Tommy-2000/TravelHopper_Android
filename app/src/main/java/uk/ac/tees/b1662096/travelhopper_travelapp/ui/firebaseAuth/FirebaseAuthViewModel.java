@@ -1,41 +1,31 @@
 package uk.ac.tees.b1662096.travelhopper_travelapp.ui.firebaseAuth;
 
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
-import android.app.Application;
+import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.AuthCredential;
 
-import uk.ac.tees.b1662096.travelhopper_travelapp.data.AuthRepository;
+import uk.ac.tees.b1662096.travelhopper_travelapp.data.FirebaseAuthRepository;
 import uk.ac.tees.b1662096.travelhopper_travelapp.data.model.TravelHopperUser;
 
-public class FirebaseAuthViewModel extends AndroidViewModel {
+public class FirebaseAuthViewModel extends ViewModel {
 
-    private AuthRepository authRepository;
+    private FirebaseAuthRepository firebaseAuthRepository;
 
-//    public MutableLiveData<TravelHopperUser> authenticatedEmailPasswordUserData;
-//    public MutableLiveData<TravelHopperUser> newEmailPasswordUserData;
-//    public MutableLiveData<TravelHopperUser> authenticatedGoogleLiveData;
+    public MutableLiveData<TravelHopperUser> authenticatedGoogleUserLiveData;
 
-    public FirebaseAuthViewModel(Application application) {
-        super(application);
-        authRepository = AuthRepository.getInstance();
+    public MutableLiveData<TravelHopperUser> newGoogleUserLiveData;
+
+    public FirebaseAuthViewModel(FirebaseAuthRepository firebaseAuthRepository) {
+        this.firebaseAuthRepository = firebaseAuthRepository;
     }
 
-//    public void createNewEmailPasswordUser(String userName, String userPassword) {
-//        authRepository.firebaseCreateEmailPasswordAccount(userName, userPassword);
-//    }
-//
-
-//    public void addNewGoogleUser(TravelHopperUser googleAccountUser) {
-//        authenticatedGoogleLiveData.setValue(googleAccountUser);
-//        authRepository.addNewUserToFirestore(authenticatedGoogleLiveData);
-//    }
-
     public void signInWithGoogle(AuthCredential googleAuthCredential) {
-        authRepository.firebaseSignInWithGoogle(googleAuthCredential);
+        authenticatedGoogleUserLiveData = firebaseAuthRepository.firebaseSignInWithGoogle(googleAuthCredential);
+    }
+
+    public void addNewGoogleUser(TravelHopperUser travelHopperUser) {
+        newGoogleUserLiveData = firebaseAuthRepository.addNewUserToFirestore(travelHopperUser);
     }
 
 }

@@ -5,43 +5,37 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.compose.runtime.snapshots.SnapshotKt;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.color.DynamicColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import android.annotation.SuppressLint;
-import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.util.Objects;
 
 import uk.ac.tees.b1662096.travelhopper_travelapp.data.model.TravelHopperUser;
 import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.ActivityMainBinding;
@@ -53,13 +47,26 @@ public class MainActivity extends AppCompatActivity {
 
     private View rootView;
 
-    private AppBarConfiguration appBarConfiguration;
+    private FirebaseAuth firebaseAuth;
+
+    private SignInClient oneTapClient;
+
+    private GoogleSignInClient googleSignInClient;
 
     private String TRAVELHOPPER_USER;
 
     private String FIREBASE_USER;
 
     private FloatingActionButton googleAccountProfileButton;
+
+    // Initialise the parent fragments to be loaded into the MainActivity
+    final Fragment myHomeFragment = new MyHomeFragment();
+    final Fragment myTripsFragment = new MyTripsFragment();
+    final Fragment myGalleryFragment = new MyGalleryFragment();
+    final Fragment myMapFragment = new MyMapFragment();
+    final FragmentManager parentFragmentManager = getSupportFragmentManager();
+    // MyHomeFragment is the first fragment that appears in MainActivity
+    Fragment activeFragment = myHomeFragment;
 
 
     @Override
@@ -69,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
         activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         rootView = activityMainBinding.getRoot();
         setContentView(rootView);
+
+
+        firebaseAuth = FirebaseAuth.getInstance();
 
         // Get the signed-in Firebase user from the intent
         FirebaseUser firebaseUser = getFirebaseUserFromLoginIntent();
@@ -84,12 +94,13 @@ public class MainActivity extends AppCompatActivity {
         getGoogleAccountProfileInfo();
 
 
-        // Set up Navigation between the four different Fragments in the NavHostFragment and the BottomNavigationView
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(activityMainBinding.navHostFragment.getId());
-        assert navHostFragment != null;
-        NavController navController = navHostFragment.getNavController();
-        BottomNavigationView bottomNavBar = activityMainBinding.bottomNavBar;
-        NavigationUI.setupWithNavController(bottomNavBar, navController);
+        // Set up Navigation between the four different Fragments and the BottomNavigationView
+        NavigationBarView bottomNavBar = activityMainBinding.bottomNavBar;
+        bottomNavBar.setOnItemSelectedListener(parentFragmentNavigation);
+        parentFragmentManager.beginTransaction().add(activityMainBinding.parentFragmentNavigationContainer.getId(), myHomeFragment, "My Home").hide(myHomeFragment).commit();
+        parentFragmentManager.beginTransaction().add(activityMainBinding.parentFragmentNavigationContainer.getId(), myTripsFragment, "My Trips").hide(myTripsFragment).commit();
+        parentFragmentManager.beginTransaction().add(activityMainBinding.parentFragmentNavigationContainer.getId(), myGalleryFragment, "My Gallery").hide(myGalleryFragment).commit();
+        parentFragmentManager.beginTransaction().add(activityMainBinding.parentFragmentNavigationContainer.getId(), myMapFragment, "My Map").hide(myMapFragment).commit();
 
 
         // Initialise navigation from MainActivity to MyCameraActivity
@@ -102,9 +113,30 @@ public class MainActivity extends AppCompatActivity {
         googleAccountProfileButton.setOnClickListener(view -> showAccountMenu(view, R.menu.profile_menu));
     }
 
-//    private void checkForNotifications() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.T)
-//    }
+
+    private NavigationBarView.OnItemSelectedListener parentFragmentNavigation = new NavigationBarView.OnItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem parentFragmentItem) {
+            if (parentFragmentItem.getItemId() == R.id.myHomeFragment) {
+                parentFragmentManager.beginTransaction().hide(activeFragment).show(myHomeFragment).commit();
+                activeFragment = myHomeFragment;
+                return true;
+            } else if (parentFragmentItem.getItemId() == R.id.myTripsFragment) {
+                parentFragmentManager.beginTransaction().hide(activeFragment).show(myTripsFragment).commit();
+                activeFragment = myTripsFragment;
+                return true;
+            } else if (parentFragmentItem.getItemId() == R.id.myGalleryFragment) {
+                parentFragmentManager.beginTransaction().hide(activeFragment).show(myGalleryFragment).commit();
+                activeFragment = myGalleryFragment;
+                return true;
+            } else if (parentFragmentItem.getItemId() == R.id.myMapFragment) {
+                parentFragmentManager.beginTransaction().hide(activeFragment).show(myMapFragment).commit();
+                activeFragment = myMapFragment;
+                return true;
+            }
+            return false;
+        }
+    };
 
     @SuppressLint("RestrictedApi")
     private void showAccountMenu(View view, @MenuRes int menuRes) {
@@ -133,9 +165,6 @@ public class MainActivity extends AppCompatActivity {
             if (item.getItemId() == R.id.googleAccountInfo) {
                 navigateToGoogleAccount();
                 return true;
-            } else if (item.getItemId() == R.id.mySettings) {
-                navigateToMySettings();
-                return true;
             } else if (item.getItemId() == R.id.signOut) {
                 signOutGoogleUser();
                 return true;
@@ -146,26 +175,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void navigateToGoogleAccount() {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        GoogleAccountFragment googleAccountFragment = (GoogleAccountFragment) getSupportFragmentManager().findFragmentByTag("GOOGLE_ACCOUNT_FRAGMENT");
-        fragmentTransaction.replace(activityMainBinding.navHostFragment.getId(), googleAccountFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.setReorderingAllowed(false);
-        fragmentTransaction.commit();
-        // Make sure that the account button from the Main Activity is not visible when navigating
-        googleAccountProfileButton.setVisibility(View.GONE);
+        Intent navigateToGoogleAccount = new Intent(this, GoogleAccountActivity.class);
+        startActivity(navigateToGoogleAccount);
     }
 
-    private void navigateToMySettings() {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        MySettingsFragment mySettingsFragment = new MySettingsFragment();
-        fragmentTransaction.replace(activityMainBinding.navHostFragment.getId(), mySettingsFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.setReorderingAllowed(false);
-        fragmentTransaction.commit();
-        // Make sure that the account button from the Main Activity is not visible when navigating
-        googleAccountProfileButton.setVisibility(View.GONE);
-    }
 
     private void navigateToSignInActivity() {
         Intent navigateToSignIn = new Intent(this, SignInActivity.class);
@@ -199,32 +212,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private TravelHopperUser getUserFromLoginIntent() {
-        return (TravelHopperUser) getIntent().getSerializableExtra(TRAVELHOPPER_USER);
-    }
-
     private FirebaseUser getFirebaseUserFromLoginIntent() {
         return (FirebaseUser) getIntent().getSerializableExtra(FIREBASE_USER);
     }
 
-    private void getGoogleSignInClient() {
+    private GoogleSignInClient getGoogleSignInClient() {
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .build();
 
-        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+        return googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
     }
 
     private void signOutGoogleUser() {
-        // Sign out the user from the app itself using Firebase Auth
+        // Sign out the user from the app itself using Firebase Auth and Google Sign In
         FirebaseAuth.getInstance().signOut();
+        getGoogleSignInClient().signOut();
+
         navigateToSignInActivity();
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, activityMainBinding.navHostFragment.getId());
-        return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp();
+        return super.onSupportNavigateUp();
     }
 
     @Override

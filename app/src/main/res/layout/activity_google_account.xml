@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GoogleAccountActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/top_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.Material3.AppBarLayout"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/googleAccountToolbar"
+            style="@style/TextAppearance.Material3.ActionBar.Title"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_back_icon"
+            app:title="@string/google_account_title" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/contentRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/top_bar_layout"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="100dp"
+        android:padding="20dp">
+
+
+        <ImageView
+            android:id="@+id/googleAccountProfileIcon"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentTop="true"
+            app:srcCompat="@drawable/ic_account_circle_icon" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/googleAccountID"
+            style="@style/TextAppearance.Material3.DisplaySmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/googleAccountProfileIcon"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="25dp"
+            android:text="@string/google_account_id" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/googleAccountDisplayName"
+            style="@style/TextAppearance.Material3.TitleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/googleAccountID"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="25dp"
+            android:text="@string/google_account_display_name" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/googleAccountEmail"
+            style="@style/TextAppearance.Material3.TitleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/googleAccountDisplayName"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="25dp"
+            android:text="@string/google_account_email" />
+
+        <RelativeLayout
+            android:id="@+id/googleAccountButtonGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/signOutButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:text="@string/sign_out" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/removeGoogleAccountButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="100dp"
+                android:layout_toStartOf="@id/signOutButton"
+                android:text="@string/remove_google_account_from_app"
+                app:backgroundTint="@color/terracotta_orange" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

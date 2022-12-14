@@ -5,20 +5,24 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
-public class TripListViewModel extends AndroidViewModel {
+public class TripListViewModel extends ViewModel {
 
     private TravelHopperRepository travelHopperRepository;
 
     private LiveData<List<TripEntity>> allTripsLiveData;
 
+    private List<TripEntity> allTripsList;
+
+    private List<TripEntity> allFavouriteTripsList;
+
     private LiveData<List<TripEntity>> allFavouriteTripsLiveData;
 
-    public TripListViewModel(@NonNull Application application) {
-        super(application);
-        travelHopperRepository = new TravelHopperRepository(application);
+    public TripListViewModel(@NonNull TravelHopperRepository travelHopperRepository) {
+        this.travelHopperRepository = travelHopperRepository;
         allTripsLiveData = travelHopperRepository.getAllTripEntities();
         allFavouriteTripsLiveData = travelHopperRepository.getAllFavouriteTrips();
     }
@@ -58,10 +62,12 @@ public class TripListViewModel extends AndroidViewModel {
 
     public void insertTrip(TripEntity tripEntity) {
         travelHopperRepository.insertTripEntity(tripEntity);
+        updateAllTrips(allTripsList);
     }
 
     public void insertAllTrips(List<TripEntity> allTripEntities) {
         travelHopperRepository.insertAllTripEntities(allTripEntities);
+        updateAllTrips(allTripsList);
     }
 
     public void updateTrip(TripEntity tripEntity) {

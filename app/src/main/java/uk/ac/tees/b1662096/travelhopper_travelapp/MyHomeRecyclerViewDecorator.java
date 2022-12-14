@@ -12,14 +12,12 @@ import java.util.Objects;
 
 public class MyHomeRecyclerViewDecorator extends RecyclerView.ItemDecoration {
 
-    private int innerItemsGap;
-    private int oneSidedGap;
-    private float itemPeekingWidth = .035f;
+    private final int innerItemsGap;
+    private final int oneSidedGap;
+    private final float itemPeekingWidth = .035f;
 
     public MyHomeRecyclerViewDecorator(Context context, @Px int cardWidth, float itemPeekingWidth) {
-        this.innerItemsGap = context.getResources().getDisplayMetrics().widthPixels;
-        this.oneSidedGap = cardWidth;
-        this.itemPeekingWidth = itemPeekingWidth;
+        this(context.getResources().getDisplayMetrics().widthPixels, cardWidth, itemPeekingWidth);
     }
 
     public MyHomeRecyclerViewDecorator(@Px int totalWidth, @Px int cardWidth, float itemPeekingWidth) {
@@ -31,7 +29,6 @@ public class MyHomeRecyclerViewDecorator extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.State state) {
-        super.getItemOffsets(outRect, view, recyclerView, state);
 
         int index = Objects.requireNonNull(recyclerView).getChildAdapterPosition(view);
         boolean isFirstCard = isFirstCard(index);
@@ -49,6 +46,6 @@ public class MyHomeRecyclerViewDecorator extends RecyclerView.ItemDecoration {
     }
 
     private boolean isLastCard(int index, RecyclerView recyclerView) {
-        return index == recyclerView.getAdapter().getItemCount() - 1;
+        return index == Objects.requireNonNull(recyclerView.getAdapter()).getItemCount() - 1;
     }
 }
