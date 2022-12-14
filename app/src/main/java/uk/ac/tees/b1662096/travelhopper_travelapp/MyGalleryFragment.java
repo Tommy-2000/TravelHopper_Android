@@ -109,7 +109,7 @@ public class MyGalleryFragment extends Fragment {
                 NavHostFragment.findNavController(MyGalleryFragment.this).navigateUp();
             }
         };
-        requireParentFragment().requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
 
     }
 
@@ -283,7 +283,7 @@ public class MyGalleryFragment extends Fragment {
 
 
             // Check that the item in the Binding View is clickable
-            bindingMediaCardView.mediaCardView.setOnClickListener(view -> Snackbar.make(rootFragmentView, "Trip Item has been clicked", Snackbar.LENGTH_SHORT).show());
+            bindingMediaCardView.mediaCardView.setOnClickListener(view -> Snackbar.make(rootFragmentView, "Image has been clicked", Snackbar.LENGTH_SHORT).show());
 //        // Set a fade-in animation for each item in the RecyclerView
 //        setRecyclerViewAnimation(myGalleryViewHolder.mediaImageView, position);
         }

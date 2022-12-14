@@ -2,16 +2,16 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rootFragmentLayout"
-    android:tag="CREATE_NEW_TRIP_FRAGMENT"
+    android:id="@+id/rootLayout"
+    android:tag="CREATE_NEW_TRIP_ACTIVITY"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:windowSoftInputMode="adjustPan"
     android:fitsSystemWindows="true"
-    tools:context=".CreateNewTripFragment">
+    tools:context=".CreateNewTripActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/createNewTripFragmentLayout"
+        android:id="@+id/createNewTripActivityLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -44,7 +44,7 @@
 
 
                 <com.google.android.material.appbar.MaterialToolbar
-                    android:id="@+id/childFragmentToolbar"
+                    android:id="@+id/createNewTripToolbar"
                     style="@style/TextAppearance.Material3.ActionBar.Title"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"

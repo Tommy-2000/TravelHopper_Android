@@ -1,8 +1,7 @@
 package uk.ac.tees.b1662096.travelhopper_travelapp.room;
 
-import android.app.Application;
+import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 
@@ -14,16 +13,15 @@ public class TravelHopperRepository {
 
     private static volatile TravelHopperRepository travelHopperRepositoryInstance;
 
-    TravelHopperRepository(@NonNull Application application) {
-        TravelHopperDatabase travelHopperDatabase = TravelHopperDatabase.getDatabase(application);
-        travelHopperDAO = travelHopperDatabase.travelHopperDAO();
+    TravelHopperRepository(TravelHopperDAO travelHopperDAO) {
+        this.travelHopperDAO = travelHopperDAO;
     }
 
-    public static TravelHopperRepository getInstance(Application application) {
+    public static TravelHopperRepository getInstance(TravelHopperDAO travelHopperDAO) {
         if (travelHopperRepositoryInstance == null) {
             synchronized (TravelHopperRepository.class) {
                 if (travelHopperRepositoryInstance == null) {
-                    travelHopperRepositoryInstance = new TravelHopperRepository(application);
+                    travelHopperRepositoryInstance = new TravelHopperRepository(travelHopperDAO);
                 }
             }
         }
@@ -34,6 +32,11 @@ public class TravelHopperRepository {
     @WorkerThread
     LiveData<List<TripEntity>> getAllTripEntities() {
         return travelHopperDAO.getAllTrips();
+    }
+
+    @WorkerThread
+    LiveData<TripEntity> getTripEntity(String tripId) {
+        return travelHopperDAO.getTrip(tripId);
     }
 
     @WorkerThread

@@ -1,6 +1,8 @@
 package uk.ac.tees.b1662096.travelhopper_travelapp;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
 
@@ -11,9 +13,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -29,22 +33,27 @@ import android.view.ViewGroup;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.FragmentMyTripsBinding;
 import uk.ac.tees.b1662096.travelhopper_travelapp.databinding.TripCardViewBinding;
 import uk.ac.tees.b1662096.travelhopper_travelapp.room.TripEntity;
 import uk.ac.tees.b1662096.travelhopper_travelapp.room.TripListViewModel;
+import uk.ac.tees.b1662096.travelhopper_travelapp.room.TripListViewModelFactory;
 
 
 public class MyTripsFragment extends Fragment {
 
     private FragmentMyTripsBinding fragmentMyTripsBinding;
 
+    private View rootFragmentView;
+
     private TripListViewModel tripListViewModel;
+
+    private TripListViewModelFactory tripListViewModelFactory;
 
     private RecyclerView myTripsRecyclerView;
 
@@ -80,7 +89,7 @@ public class MyTripsFragment extends Fragment {
                 NavHostFragment.findNavController(MyTripsFragment.this).navigateUp();
             }
         };
-        requireParentFragment().requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
 
     }
 
@@ -90,24 +99,27 @@ public class MyTripsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the root view from the layout of this fragment and then return it
         fragmentMyTripsBinding = FragmentMyTripsBinding.inflate(fragmentInflater, container, false);
-        View rootFragmentView = fragmentMyTripsBinding.getRoot();
+        rootFragmentView = fragmentMyTripsBinding.getRoot();
 
-        // Get all trips from the database by using the view model
+        // Get all trips from the database by using the view model and its factory class
         try {
-            tripListViewModel = new ViewModelProvider(requireActivity()).get(TripListViewModel.class);
+            tripListViewModelFactory = ViewModelInjector.getTripListViewModelFactory(requireActivity());
+            tripListViewModel = new ViewModelProvider(requireActivity(), tripListViewModelFactory).get(TripListViewModel.class);
             // Set up the RecyclerView once data is retrieved from the view model
-            tripListViewModel.getAllTrips().observe(getViewLifecycleOwner(), new Observer<List<TripEntity>>() {
-                @Override
-                public void onChanged(List<TripEntity> tripEntityList) {
-                    getAllTrips();
-                }
-            });
+            tripListViewModel.getAllTrips().observe(getViewLifecycleOwner(), tripListUpdateObserver);
         } catch (Exception e) {
-            Log.e("View Model Observer Exception", e.getLocalizedMessage());
+            Log.e("VIEW_MODEL_EXCEPTION", e.getLocalizedMessage());
         }
 
         return rootFragmentView;
     }
+
+    Observer<List<TripEntity>> tripListUpdateObserver = new Observer<>() {
+        @Override
+        public void onChanged(List<TripEntity> updatedTripEntityList) {
+            myTripsRecyclerView.setAdapter(new MyTripsRecyclerViewAdapter(updatedTripEntityList));
+        }
+    };
 
 
     @Override
@@ -124,8 +136,10 @@ public class MyTripsFragment extends Fragment {
         myTripsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         // Set up the adapter for the RecyclerView
         allTripsAdapter = new MyTripsRecyclerViewAdapter(tripEntityList);
-        tripListViewModel.getAllTrips().observe(getViewLifecycleOwner(), existingTripEntityList -> allTripsAdapter.updateTripList(existingTripEntityList));
-        myTripsRecyclerView.setAdapter(allTripsAdapter);
+        tripListViewModel.getAllTrips().observe(getViewLifecycleOwner(), existingTripEntityList -> {
+            allTripsAdapter = new MyTripsRecyclerViewAdapter(existingTripEntityList);
+            myTripsRecyclerView.setAdapter(allTripsAdapter);
+        });
 
         // Get the RefreshLayout from the view binding object
         tripRefreshLayout = fragmentMyTripsBinding.myTripsRefreshLayout;
@@ -154,29 +168,16 @@ public class MyTripsFragment extends Fragment {
         filterTripButton.setOnClickListener(filterRecyclerView -> showTripFilterMenu(filterRecyclerView, R.menu.trip_filter_popup_menu));
 
         // Once the button is clicked, the CreateNewTripFragment will launch in the current fragment's parent layout
-        addNewTripButton.setOnClickListener(navigateToFragment -> navigateToChildFragment());
+        addNewTripButton.setOnClickListener(onClickView -> navigateToCreateNewTripActivity());
 
     }
 
 
-    private void navigateToChildFragment() {
-        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-        // Get the current fragment (MyTripsFragment) called currentFragment by its tag
-        MyTripsFragment currentFragment = (MyTripsFragment) getParentFragmentManager().findFragmentByTag("MY_TRIPS_FRAGMENT");
-        // Create an instance of the child fragment (CreateNewTripFragment) and call it childFragment
-        CreateNewTripFragment childFragment = CreateNewTripFragment.getNewInstance();
-        // Replace the current parent fragment's layout for the child fragment (CreateNewTripFragment)
-        fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_from_left_anim, R.anim.fragment_slide_to_right_anim);
-        fragmentTransaction.replace(fragmentMyTripsBinding.rootFragmentLayout.getId(), childFragment);
-        fragmentTransaction.setReorderingAllowed(true);
-        fragmentTransaction.commit();
-        // Make sure that the current fragment disappears when navigating to the child fragment
-        if (currentFragment == null) {
-            fragmentMyTripsBinding.myTripsFragmentLayout.setVisibility(View.GONE);
-        } else {
-            fragmentMyTripsBinding.myTripsFragmentLayout.setVisibility(View.VISIBLE);
-        }
+    private void navigateToCreateNewTripActivity() {
+        Intent navigateToMainActivity = new Intent(requireActivity(), CreateNewTripActivity.class);
+        startActivity(navigateToMainActivity);
     }
+
 
     @SuppressLint("RestrictedApi")
     private void showTripFilterMenu(View filterRecyclerView, @MenuRes int filter_popup_menu) {
@@ -220,7 +221,8 @@ public class MyTripsFragment extends Fragment {
     private void refreshAllTrips() {
         try {
             tripListViewModel.getAllTrips().observe(getViewLifecycleOwner(), existingTripEntityList -> {
-                allTripsAdapter.updateTripList(existingTripEntityList);
+                allTripsAdapter = new MyTripsRecyclerViewAdapter(existingTripEntityList);
+                myTripsRecyclerView.setAdapter(allTripsAdapter);
             });
         } catch (IllegalArgumentException e) {
             Log.e("VIEW_MODEL_EXCEPTION", e.getLocalizedMessage());
@@ -263,9 +265,17 @@ public class MyTripsFragment extends Fragment {
 
         class MyTripsViewHolder extends RecyclerView.ViewHolder {
 
-            public MyTripsViewHolder(TripCardViewBinding bindingTripCardView) {
-                super(bindingTripCardView.getRoot());
+            TripCardViewBinding tripCardViewBinding;
+
+            public MyTripsViewHolder(TripCardViewBinding tripCardViewBinding) {
+                super(tripCardViewBinding.getRoot());
+                this.tripCardViewBinding = tripCardViewBinding;
             }
+
+            void bindOnClickListener(View.OnClickListener onClickListener) {
+                tripCardViewBinding.myHomeTripCardView.setOnClickListener(onClickListener);
+            }
+
         }
 
         @NonNull
@@ -277,12 +287,24 @@ public class MyTripsFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull MyTripsViewHolder myTripsViewHolder, int position) {
+            TripEntity tripEntity = tripEntityList.get(position);
             if (tripEntityList.get(position) != null) {
                 bindingTripCardView.tripName.setText(tripEntityList.get(position).getTripName());
                 bindingTripCardView.tripLocation.setText(tripEntityList.get(position).getTripLocation());
-                bindingTripCardView.tripStartDate.setText(String.format(Locale.getDefault(), tripEntityList.get(position).getTripStartDate().toString()));
-                bindingTripCardView.tripEndDate.setText(String.format(Locale.getDefault(), tripEntityList.get(position).getTripEndDate().toString()));
+                bindingTripCardView.tripStartDate.setText(tripEntityList.get(position).getTripStartDate());
+                bindingTripCardView.tripEndDate.setText(tripEntityList.get(position).getTripEndDate());
+                bindingTripCardView.tripFavouriteIcon.setChecked(tripEntityList.get(position).isTripFavourite());
             }
+
+            myTripsViewHolder.bindOnClickListener(createOnClickListener(String.valueOf(tripEntity.getTripID())));
+        }
+
+        private View.OnClickListener createOnClickListener(String tripID) {
+            return holderView -> {
+                NavDirections tripDetailsNavigation = MyTripsFragmentDirections.actionMyTripsFragmentToTripDetailsFragment(tripID);
+                Navigation.findNavController(holderView).navigate(tripDetailsNavigation);
+                Snackbar.make(rootFragmentView, "Trip has been clicked", Snackbar.LENGTH_SHORT).show();
+            };
         }
 
         @Override

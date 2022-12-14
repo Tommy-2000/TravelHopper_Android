@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import uk.ac.tees.b1662096.travelhopper_travelapp.MainActivity;
+import uk.ac.tees.b1662096.travelhopper_travelapp.ViewModelInjector;
 import uk.ac.tees.b1662096.travelhopper_travelapp.data.model.TravelHopperUser;
 import uk.ac.tees.b1662096.travelhopper_travelapp.ui.firebaseAuth.SignInActivity;
 
@@ -18,9 +19,9 @@ public class SplashActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
 
-    private FirebaseUser currentFirebaseUser;
-
     private SplashViewModel splashViewModel;
+
+    private SplashViewModelFactory splashViewModelFactory;
 
     private String TRAVELHOPPER_USER;
 
@@ -29,17 +30,19 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        // IMPORTANT! - Make sure to first test the application with Firebase emulators before using in production!
+        firebaseAuth.useEmulator("127.0.0.1", 9099);
 
-        splashViewModel = new ViewModelProvider(this).get(SplashViewModel.class);
-        navigateToSignInActivity();
-//        splashViewModel.checkIfUserIsAuthenticated();
-//        splashViewModel.isUserAuthenticatedData.observe(this, travelHopperUser -> {
-//            if (!travelHopperUser.isUserAuthenticated && firebaseAuth.getCurrentUser() == null) {
-//
-//            } else {
-//                getUserFromFirestore(travelHopperUser.userId);
-//            }
-//        });
+        splashViewModelFactory = ViewModelInjector.getSplashViewModelFactory();
+        splashViewModel = new ViewModelProvider(this, splashViewModelFactory).get(SplashViewModel.class);
+        splashViewModel.checkIfUserIsAuthenticated();
+        splashViewModel.isUserAuthenticatedData.observe(this, travelHopperUser -> {
+            if (!travelHopperUser.isUserAuthenticated && firebaseAuth.getCurrentUser() == null) {
+                navigateToSignInActivity();
+            } else {
+                getUserFromFirestore(travelHopperUser.userId);
+            }
+        });
 
     }
 

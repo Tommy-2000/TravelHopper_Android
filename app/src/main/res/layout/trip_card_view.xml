@@ -12,33 +12,23 @@
     app:cardElevation="2dp"
     app:cardUseCompatPadding="true">
 
-    <RelativeLayout
-        android:id="@+id/tripCardContent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/tripMedia"
-            android:layout_width="wrap_content"
-            android:layout_height="250dp"
-            android:src="@drawable/unsplash_placeholder_medium"/>
-
-        <CheckBox
-            android:id="@+id/tripFavouriteIcon"
-            style="?attr/materialIconButtonOutlinedStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tripMedia"
-            android:button="@drawable/sl_favourite_24dp"
-            android:contentDescription="@string/favourite_button" />
 
         <RelativeLayout
+            android:id="@+id/tripCardContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:layout_below="@id/tripMedia">
+            android:padding="16dp">
+
+            <CheckBox
+                android:id="@+id/tripFavouriteIcon"
+                style="?attr/materialIconButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/tripLocation"
+                android:button="@drawable/sl_favourite_24dp"
+                android:contentDescription="@string/favourite_button" />
 
             <TextView
                 android:id="@+id/tripName"
@@ -46,6 +36,15 @@
                 android:layout_height="wrap_content"
                 android:text="@string/trip_title"
                 android:textAppearance="?attr/textAppearanceTitleLarge" />
+
+            <TextView
+                android:id="@+id/tripLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tripEndDate"
+                android:layout_marginTop="10dp"
+                android:text="@string/trip_secondary_title"
+                android:textAppearance="?attr/textAppearanceSubtitle2" />
 
             <TextView
                 android:id="@+id/tripStartDate"
@@ -65,17 +64,7 @@
                 android:text="@string/trip_secondary_title"
                 android:textAppearance="?attr/textAppearanceSubtitle2" />
 
-            <TextView
-                android:id="@+id/tripLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tripEndDate"
-                android:layout_marginTop="10dp"
-                android:text="@string/trip_secondary_title"
-                android:textAppearance="?attr/textAppearanceSubtitle2" />
 
         </RelativeLayout>
-
-    </RelativeLayout>
 
 </com.google.android.material.card.MaterialCardView>

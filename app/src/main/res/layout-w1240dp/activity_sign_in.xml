@@ -27,36 +27,65 @@
             android:text="@string/login_activity_title" />
 
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/signInBannerCardView"
-            android:layout_width="675dp"
-            android:layout_height="450dp"
-            android:layout_marginTop="200dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            app:cardElevation="@dimen/cardview_default_elevation">
-
-            <ImageView
-                android:id="@+id/signInBannerImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/unsplash_placeholder_large" />
-        </com.google.android.material.card.MaterialCardView>
-
         <RelativeLayout
-            android:id="@+id/signInButtonLayout"
+            android:id="@+id/signInActionLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true">
+            android:layout_centerVertical="true">
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/usernameInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="200dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/usernameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/prompt_email"
+                    android:inputType="textEmailAddress"
+                    android:selectAllOnFocus="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/passwordInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/usernameInputLayout"
+                android:layout_marginTop="30dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/passwordEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/prompt_password"
+                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:selectAllOnFocus="true" />
+            </com.google.android.material.textfield.TextInputLayout>
 
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/signInButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/passwordInputLayout"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:enabled="true"
+                android:text="@string/action_sign_in_email_password" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/registerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/signInButton"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
                 android:enabled="true"
                 android:text="@string/action_sign_in_email_password" />
 
@@ -65,7 +94,7 @@
                 android:id="@+id/continueAsGuest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/signInButton"
+                android:layout_below="@id/registerButton"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="35dp"
                 android:enabled="true"

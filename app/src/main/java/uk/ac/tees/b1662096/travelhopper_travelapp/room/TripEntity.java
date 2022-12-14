@@ -1,13 +1,15 @@
 package uk.ac.tees.b1662096.travelhopper_travelapp.room;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.BindingAdapter;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
+import com.bumptech.glide.Glide;
 
 @Entity(tableName = "tripEntity")
 public class TripEntity {
@@ -23,11 +25,8 @@ public class TripEntity {
     @ColumnInfo(name = "trip_location")
     private final String tripLocation;
 
-    @ColumnInfo(name = "trip_media_path")
-    private final String tripMediaPath;
-
-    @Ignore
-    private final Uri tripMediaUri;
+    @ColumnInfo(name = "trip_media_uri")
+    private final String tripMediaUri;
 
     @ColumnInfo(name = "trip_start_date")
     private final String tripStartDate;
@@ -42,12 +41,11 @@ public class TripEntity {
     @ColumnInfo(name = "trip_favourite")
     private final boolean tripFavourite;
 
-    public TripEntity(int tripID, @NonNull String tripName, String tripLocation, String tripMediaPath, @NonNull String tripStartDate, @NonNull String tripEndDate, String tripDetails, boolean tripFavourite) {
+    public TripEntity(int tripID, @NonNull String tripName, String tripLocation, String tripMediaUri, @NonNull String tripStartDate, @NonNull String tripEndDate, String tripDetails, boolean tripFavourite) {
         this.tripID = tripID;
         this.tripName = tripName;
         this.tripLocation = tripLocation;
-        this.tripMediaPath = tripMediaPath;
-        this.tripMediaUri = null;
+        this.tripMediaUri = tripMediaUri;
         this.tripStartDate = tripStartDate;
         this.tripEndDate = tripEndDate;
         this.tripDetails = tripDetails;
@@ -68,12 +66,16 @@ public class TripEntity {
         return tripLocation;
     }
 
-    public String getTripMediaPath() {
-        return tripMediaPath;
+    public String getTripMediaUri() {
+        return tripMediaUri;
     }
 
-    public Uri getTripMediaUri() {
-        return tripMediaUri;
+
+    @BindingAdapter("imageFromUri")
+    public static void tripImageFromUri(ImageView imageView, String tripMediaUri) {
+        if (tripMediaUri != null && !tripMediaUri.isEmpty()) {
+            Glide.with(imageView.getContext()).load(tripMediaUri).into(imageView);
+        }
     }
 
     public String getTripStartDate() {

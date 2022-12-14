@@ -7,11 +7,6 @@
         android:title="@string/account_info" />
 
     <item
-        android:id="@+id/mySettings"
-        android:icon="@drawable/ic_settings_icon"
-        android:title="@string/my_settings" />
-
-    <item
         android:id="@+id/signOut"
         android:icon="@drawable/ic_sign_out_icon"
         android:title="@string/sign_out" />

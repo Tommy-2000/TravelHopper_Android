@@ -13,13 +13,13 @@ import java.util.concurrent.Executors;
 
 @Database(entities = {TripEntity.class}, version = 1, exportSchema = false)
 public abstract class TravelHopperDatabase extends RoomDatabase {
-    public abstract TravelHopperDAO travelHopperDAO();
 
+    public abstract TravelHopperDAO travelHopperDAO();
     private static volatile TravelHopperDatabase DATABASE_INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
-    static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+    public static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-    static TravelHopperDatabase getDatabase(final Context databaseContext) {
+    public static TravelHopperDatabase getDatabase(final Context databaseContext) {
         if (DATABASE_INSTANCE == null) {
             synchronized (TravelHopperDatabase.class) {
                 if (DATABASE_INSTANCE == null) {
@@ -29,5 +29,11 @@ public abstract class TravelHopperDatabase extends RoomDatabase {
         }
         return DATABASE_INSTANCE;
     }
+
+
+    public static void destroyDatabase() {
+        DATABASE_INSTANCE = null;
+    }
+
 
 }
